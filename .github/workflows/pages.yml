@@ -2,7 +2,7 @@ name: Deploy Mozart release page
 on:
   push:
     branches: [main]
-    paths: ["index.html", "assets/**", "update/**", ".github/workflows/pages.yml"]
+    paths: ["index.html", "styles.css", "app.js", "assets/**", "update/**", ".github/workflows/pages.yml"]
   workflow_dispatch:
 permissions:
   contents: read

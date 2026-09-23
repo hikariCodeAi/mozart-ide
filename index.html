@@ -1,3 +1,272 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mozart IDE releases</title></head>
-<body><main><h1>Mozart IDE</h1><p>Public releases, notes, checksums, and update metadata for the Mozart IDE desktop application.</p><p>公开发布仓库：安装包、版本说明、校验和及更新清单。</p><p><strong>No installable release is available yet.</strong></p><p><a href="https://github.com/hikariCodeAi/mozart-ide/releases">GitHub Releases</a> · <a href="update/latest.json">Update manifest</a></p></main></body></html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#061019">
+    <meta
+      name="description"
+      content="Mozart IDE：为 Agent 时代打造的原生 C++ 开发与代码终审工作台。"
+    >
+    <link rel="icon" type="image/png" href="assets/brand/mozart-app-icon-256.png">
+    <link rel="preload" as="image" href="assets/hero/hero-atmosphere-1920.jpg">
+    <link rel="preload" as="image" href="assets/hero/mozart-composer-transparent-768.png">
+    <link rel="preload" as="image" href="assets/screenshots/performance-evidence-1710x1030.png">
+    <title>Mozart IDE — 为 Agent 时代而生</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.min.js"></script>
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <div id="app" v-cloak class="site-shell relative isolate min-h-svh overflow-hidden">
+      <a class="skip-link" href="#main-content">{{ ui.skip }}</a>
+      <div class="atmosphere" aria-hidden="true"></div>
+      <div class="noise" aria-hidden="true"></div>
+
+      <header class="site-header relative z-30 flex items-center justify-between" :aria-label="ui.headerLabel">
+        <a class="brand-link shrink-0" href="#main-content" :aria-label="ui.brandHome">
+          <img src="assets/brand/mozart-wordmark.svg" alt="Mozart IDE">
+        </a>
+
+        <nav class="desktop-nav" :aria-label="ui.navLabel">
+          <button
+            v-for="(item, index) in ui.navItems"
+            :key="item"
+            type="button"
+            :class="{ active: currentIndex === index }"
+            @click="goTo(index)"
+          >{{ item }}</button>
+        </nav>
+
+        <div class="header-actions flex items-center">
+          <div class="locale-switch" role="group" :aria-label="ui.languageLabel">
+            <button
+              type="button"
+              lang="zh-CN"
+              :aria-pressed="locale === 'zh'"
+              :class="{ active: locale === 'zh' }"
+              @click="setLocale('zh')"
+            >中文</button>
+            <span aria-hidden="true">/</span>
+            <button
+              type="button"
+              lang="en"
+              :aria-pressed="locale === 'en'"
+              :class="{ active: locale === 'en' }"
+              @click="setLocale('en')"
+            >EN</button>
+          </div>
+
+          <a
+            v-if="release.available"
+            class="header-cta"
+            :href="release.url"
+            rel="noopener"
+          >
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m0 0 5-5m-5 5-5-5M5 20h14"/></svg>
+            {{ ui.download }}
+          </a>
+          <button v-else class="header-cta is-disabled" type="button" disabled>
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m0 0 5-5m-5 5-5-5M5 20h14"/></svg>
+            {{ ui.comingSoon }}
+          </button>
+        </div>
+      </header>
+
+      <main id="main-content" class="hero-stage relative z-10" tabindex="-1">
+        <section
+          id="carousel-area"
+          class="hero-grid"
+          :aria-roledescription="ui.carousel"
+          :aria-label="ui.carouselLabel"
+          @mouseenter="pointerInside = true"
+          @mouseleave="pointerInside = false"
+          @focusin="focusInside = true"
+          @focusout="handleFocusOut"
+          @keydown.left.prevent="previous"
+          @keydown.right.prevent="next"
+        >
+          <div class="copy-column relative z-20 flex min-w-0 flex-col justify-center">
+            <div class="copy-reserve" :class="{ changing: transitioning }">
+              <div class="eyebrow flex items-center">
+                <span>{{ activeSlide.eyebrow }}</span>
+                <span class="eyebrow-rule" aria-hidden="true"></span>
+              </div>
+              <h1>
+                <span
+                  v-for="(part, partIndex) in headlineParts"
+                  :key="part"
+                  :class="{ 'headline-accent': partIndex > 0 }"
+                >{{ part }}</span>
+              </h1>
+              <p class="body-copy">{{ activeSlide.body }}</p>
+              <p class="memory-line">{{ activeSlide.memory }}</p>
+            </div>
+
+            <ul class="chip-list flex flex-wrap" :aria-label="ui.capabilities">
+              <li v-for="chip in activeSlide.chips" :key="chip">{{ chip }}</li>
+            </ul>
+
+            <div class="hero-actions flex items-center">
+              <a
+                v-if="release.available"
+                class="primary-action"
+                :href="release.url"
+                rel="noopener"
+              >
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m0 0 5-5m-5 5-5-5M5 20h14"/></svg>
+                {{ ui.download }}
+              </a>
+              <button v-else class="primary-action is-disabled" type="button" disabled>
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m0 0 5-5m-5 5-5-5M5 20h14"/></svg>
+                {{ ui.comingSoon }}
+              </button>
+
+              <button class="secondary-action" type="button" @click="focusMedia">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 6 8 6-8 6V6Z"/></svg>
+                {{ activeSlide.cta }}
+              </button>
+            </div>
+
+            <a class="releases-link" href="https://github.com/hikariCodeAi/mozart-ide/releases" rel="noopener">
+              {{ ui.releases }}
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </a>
+          </div>
+
+          <div class="composer-column relative z-10 self-end" aria-hidden="true">
+            <picture>
+              <source media="(max-width: 900px)" srcset="assets/hero/mozart-composer-transparent-768.png">
+              <img src="assets/hero/mozart-composer-transparent.png" alt="">
+            </picture>
+          </div>
+
+          <div class="media-column relative z-20 flex min-w-0 items-center">
+            <div
+              id="carousel-media"
+              ref="media"
+              class="media-shell relative"
+              role="group"
+              tabindex="0"
+              :aria-label="activeSlide.alt"
+              @touchstart.passive="onTouchStart"
+              @touchend.passive="onTouchEnd"
+            >
+              <div class="score-line" aria-hidden="true">
+                <span class="score-gold">♪</span><span>♩</span><span>♫</span>
+              </div>
+
+              <div class="counter" aria-hidden="true">
+                <strong>{{ pad(currentIndex + 1) }}</strong><span>/</span><span>{{ pad(slides.length) }}</span>
+              </div>
+
+              <div class="screenshot-window">
+                <div class="window-bar" aria-hidden="true">
+                  <span class="traffic red"></span><span class="traffic amber"></span><span class="traffic green"></span>
+                  <span class="window-title">MOZART IDE</span>
+                </div>
+                <div class="screenshot-viewport">
+                  <img
+                    v-if="!failedImages[activeSlide.image]"
+                    :key="activeSlide.image"
+                    class="screenshot-image"
+                    :class="{ changing: transitioning }"
+                    :src="activeSlide.image"
+                    :alt="activeSlide.alt"
+                    :fetchpriority="currentIndex === 0 ? 'high' : 'auto'"
+                    loading="eager"
+                    draggable="false"
+                    @error="markImageFailed(activeSlide.image)"
+                  >
+                  <div v-else class="evidence-placeholder" role="img" :aria-label="activeSlide.alt">
+                    <img src="assets/brand/mozart-app-icon-256.png" alt="">
+                    <strong>{{ ui.evidencePending }}</strong>
+                    <span>{{ ui.noFabrication }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="next-preview" aria-hidden="true">
+                <img
+                  v-if="!failedImages[nextSlide.image]"
+                  :src="nextSlide.image"
+                  alt=""
+                  loading="eager"
+                  draggable="false"
+                  @error="markImageFailed(nextSlide.image)"
+                >
+              </div>
+
+              <button class="arrow arrow-left" type="button" :aria-label="ui.previous" @click="previous">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg>
+              </button>
+              <button class="arrow arrow-right" type="button" :aria-label="ui.next" @click="next">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <div class="control-deck relative z-30">
+          <ul class="evidence-strip" :aria-label="ui.evidenceLabel">
+            <li v-for="item in ui.evidence" :key="item.label">
+              <span class="evidence-icon" aria-hidden="true">{{ item.icon }}</span>
+              <span>{{ item.label }}</span>
+            </li>
+          </ul>
+
+          <div class="tabs-wrap">
+            <div class="tabs" role="tablist" :aria-label="ui.slideNavigation">
+              <button
+                v-for="(slide, index) in slides"
+                :id="'tab-' + index"
+                :key="slide.tab"
+                class="tab"
+                type="button"
+                role="tab"
+                :aria-selected="currentIndex === index"
+                :aria-controls="'slide-panel-' + index"
+                :tabindex="currentIndex === index ? 0 : -1"
+                :class="{ active: currentIndex === index }"
+                @click="goTo(index)"
+                @keydown.home.prevent="goTo(0)"
+                @keydown.end.prevent="goTo(slides.length - 1)"
+              >
+                <span class="tab-number">{{ pad(index + 1) }}</span>
+                <span class="tab-label">{{ slide.tab }}</span>
+                <span v-if="currentIndex === index" class="progress-track" aria-hidden="true">
+                  <span class="progress-value" :style="{ transform: 'scaleX(' + progressRatio + ')' }"></span>
+                </span>
+              </button>
+            </div>
+
+            <button
+              class="pause-button"
+              type="button"
+              :aria-label="explicitPaused ? ui.play : ui.pause"
+              :aria-pressed="explicitPaused.toString()"
+              @click="togglePause"
+            >
+              <svg v-if="explicitPaused" aria-hidden="true" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7V5Z"/></svg>
+              <svg v-else aria-hidden="true" viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></svg>
+            </button>
+            <span class="duration" aria-hidden="true">8s</span>
+          </div>
+        </div>
+
+        <div
+          v-for="(slide, index) in slides"
+          :id="'slide-panel-' + index"
+          :key="'panel-' + index"
+          role="tabpanel"
+          :aria-labelledby="'tab-' + index"
+          :hidden="currentIndex !== index"
+          class="sr-only"
+        >{{ slide.headline }}</div>
+
+        <p class="sr-only" aria-live="polite" aria-atomic="true">{{ liveStatus }}</p>
+      </main>
+    </div>
+  </body>
+</html>
