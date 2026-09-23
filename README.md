@@ -13,6 +13,7 @@ The website is a static GitHub Pages project with no build step or backend:
 - `app.js` — Vue 2 state, bilingual copy, carousel behavior, and release-state loading.
 - `assets/` — approved brand artwork, layered hero artwork, and real product screenshots.
 - `update/latest.json` — the single source of truth for download availability.
+- `update/appcast-macos-arm64.xml` and `update/appcast-windows-x64.xml` — signed, derived platform feeds generated only from verified release data.
 - `release-notes/` — notes for verified public releases.
 - `.github/workflows/pages.yml` — GitHub Pages deployment workflow.
 
@@ -49,7 +50,7 @@ git diff --check
 
 ## Release truth / 发布真实性
 
-No installable release has been published yet. While `update/latest.json` contains `"published": false`, every download CTA must remain disabled and display “即将发布 / Coming soon”. Set it to `true` only after a verified GitHub Release contains a real installer URL; never add placeholder assets, fabricated checksums, or invented performance numbers.
+No installable release has been published yet. While `update/latest.json` contains `"published": false`, every download CTA must remain disabled and display “即将发布 / Coming soon”. A published manifest uses a stable `X.Y.Z` version and exactly one signed `macos/arm64` DMG plus one signed `windows/x64` EXE, including size, SHA-256, and Ed25519 signature. Both appcasts are generated from that same verified data and advance in the same commit only after the draft Release assets are complete and the Release is public. Never add placeholder assets, fabricated checksums, signatures, or performance numbers.
 
 ## Deployment / 部署
 
