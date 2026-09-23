@@ -16,15 +16,14 @@ The composite design is a visual reference only. Do not use it as a full-page ba
 
 - `hero/mozart-composer-transparent.png` — 1247 × 1261 transparent source cutout.
 - `hero/mozart-composer-transparent-768.png` — responsive cutout.
-- `hero/mozart-composer-base.png` and `hero/mozart-composer-base-768.png` — animation clean plate with the moving head and writing hand removed.
-- `hero/mozart-composer-head.png` and `hero/mozart-composer-head-768.png` — exact head layer derived from the approved source cutout.
-- `hero/mozart-composer-writing-hand.png` and `hero/mozart-composer-writing-hand-768.png` — writing hand and quill motion layer derived from the approved source cutout.
+- `hero/mozart-composer-base-v2.png` and `hero/mozart-composer-base-v2-768.png` — animation clean plate that keeps the complete head, neck, wrists, and hands intact while removing only the feather quill.
+- `hero/mozart-composer-quill.png` and `hero/mozart-composer-quill-768.png` — feather-quill motion layer derived from the approved source cutout.
 - `hero/mozart-composer-flame.png` and `hero/mozart-composer-flame-768.png` — candle-flame highlight layer derived from the approved source cutout.
 - `hero/hero-atmosphere-4k.png` — lossless 3840 × 2160 source background.
 - `hero/hero-atmosphere-4k.jpg` — compressed 4K web background.
 - `hero/hero-atmosphere-1920.jpg` — default desktop web background.
 
-The background and composer art contain no UI or localized text. The composer motion uses layered PNG assets and CSS keyframes; `prefers-reduced-motion` freezes the layers in their neutral pose. Render the headline, paragraph, carousel controls, evidence labels, and buttons with HTML/CSS.
+The background and composer art contain no UI or localized text. The composer motion keeps the figure anatomically intact and animates only the feather quill and candle highlight with CSS keyframes; `prefers-reduced-motion` freezes the layers in their neutral pose. Render the headline, paragraph, carousel controls, evidence labels, and buttons with HTML/CSS.
 
 ## Real product screenshots
 
