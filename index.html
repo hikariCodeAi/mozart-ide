@@ -10,7 +10,13 @@
     >
     <link rel="icon" type="image/png" href="assets/brand/mozart-app-icon-256.png">
     <link rel="preload" as="image" href="assets/hero/hero-atmosphere-1920.jpg">
-    <link rel="preload" as="image" href="assets/hero/mozart-composer-transparent-768.png">
+    <link
+      rel="preload"
+      as="image"
+      href="assets/hero/mozart-composer-base.png"
+      imagesrcset="assets/hero/mozart-composer-base-768.png 759w, assets/hero/mozart-composer-base.png 1247w"
+      imagesizes="(max-width: 900px) 15rem, 14vw"
+    >
     <link rel="preload" as="image" href="assets/screenshots/performance-evidence-1710x1030.png">
     <title>Mozart IDE — 为 Agent 时代而生</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -135,11 +141,50 @@
             </a>
           </div>
 
-          <div class="composer-column relative z-10 self-end" aria-hidden="true">
-            <picture>
-              <source media="(max-width: 900px)" srcset="assets/hero/mozart-composer-transparent-768.png">
-              <img src="assets/hero/mozart-composer-transparent.png" alt="">
-            </picture>
+          <div
+            class="composer-column relative z-10 self-end"
+            :class="{ 'motion-paused': explicitPaused }"
+            aria-hidden="true"
+          >
+            <div class="composer-art">
+              <picture class="composer-layer composer-base">
+                <source media="(max-width: 900px)" srcset="assets/hero/mozart-composer-base-768.png">
+                <img
+                  src="assets/hero/mozart-composer-base.png"
+                  alt=""
+                  decoding="async"
+                  fetchpriority="high"
+                  draggable="false"
+                >
+              </picture>
+              <picture class="composer-layer composer-head composer-motion">
+                <source media="(max-width: 900px)" srcset="assets/hero/mozart-composer-head-768.png">
+                <img
+                  src="assets/hero/mozart-composer-head.png"
+                  alt=""
+                  decoding="async"
+                  draggable="false"
+                >
+              </picture>
+              <picture class="composer-layer composer-writing-hand composer-motion">
+                <source media="(max-width: 900px)" srcset="assets/hero/mozart-composer-writing-hand-768.png">
+                <img
+                  src="assets/hero/mozart-composer-writing-hand.png"
+                  alt=""
+                  decoding="async"
+                  draggable="false"
+                >
+              </picture>
+              <picture class="composer-layer composer-flame composer-motion">
+                <source media="(max-width: 900px)" srcset="assets/hero/mozart-composer-flame-768.png">
+                <img
+                  src="assets/hero/mozart-composer-flame.png"
+                  alt=""
+                  decoding="async"
+                  draggable="false"
+                >
+              </picture>
+            </div>
           </div>
 
           <div class="media-column relative z-20 flex min-w-0 items-center">
