@@ -95,17 +95,19 @@
         >
           <div class="copy-column relative z-20 flex min-w-0 flex-col justify-center">
             <div class="copy-reserve" :class="{ changing: transitioning }">
-              <div class="eyebrow flex items-center">
-                <span>{{ activeSlide.eyebrow }}</span>
-                <span class="eyebrow-rule" aria-hidden="true"></span>
+              <div class="headline-group">
+                <div class="eyebrow flex items-center">
+                  <span>{{ activeSlide.eyebrow }}</span>
+                  <span class="eyebrow-rule" aria-hidden="true"></span>
+                </div>
+                <h1 class="hero-headline">
+                  <span
+                    v-for="(part, partIndex) in headlineParts"
+                    :key="part"
+                    :class="{ 'headline-accent': partIndex > 0 }"
+                  >{{ part }}</span>
+                </h1>
               </div>
-              <h1>
-                <span
-                  v-for="(part, partIndex) in headlineParts"
-                  :key="part"
-                  :class="{ 'headline-accent': partIndex > 0 }"
-                >{{ part }}</span>
-              </h1>
               <p class="body-copy">{{ activeSlide.body }}</p>
               <p class="memory-line">{{ activeSlide.memory }}</p>
             </div>

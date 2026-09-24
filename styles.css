@@ -10,6 +10,10 @@
   --white: #f4f7f8;
   --muted: #a8b4bd;
   --line: rgba(97, 185, 212, 0.28);
+  --headline: #e7e0d2;
+  --headline-lift: clamp(-1.25rem, -2svh, -0.9rem);
+  --font-heading: "Iowan Old Style", "Songti SC", STSong, "Noto Serif CJK SC", "Source Han Serif SC",
+    SimSun, Georgia, serif;
   --header-h: clamp(4rem, 7.8svh, 5.25rem);
   --deck-h: clamp(4.4rem, 10.2svh, 6.5rem);
   font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
@@ -255,6 +259,10 @@ a:focus-visible,
   transform: translateX(-0.75rem);
 }
 
+.headline-group {
+  transform: translateY(var(--headline-lift));
+}
+
 .eyebrow {
   gap: 1rem;
   margin-bottom: clamp(0.7rem, 1.6svh, 1.25rem);
@@ -272,22 +280,24 @@ a:focus-visible,
   background: linear-gradient(90deg, rgba(52, 218, 245, 0.8), transparent);
 }
 
-h1 {
-  max-width: 13ch;
+.hero-headline {
+  max-width: 100%;
   margin: 0;
-  color: var(--white);
-  font-size: clamp(2.35rem, 3.65vw, 5rem);
-  font-weight: 780;
-  letter-spacing: -0.055em;
-  line-height: 1.05;
+  color: var(--headline);
+  font-family: var(--font-heading);
+  font-size: clamp(2.1rem, 2.85vw, 3.8rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  text-shadow: 0 0.15rem 1.6rem rgba(5, 12, 18, 0.3);
   text-wrap: balance;
 }
 
-h1 span { display: block; }
+.hero-headline span { display: block; }
 
 .headline-accent {
-  color: var(--cyan-soft);
-  text-shadow: 0 0 2.25rem rgba(58, 216, 245, 0.12);
+  color: inherit;
+  text-shadow: inherit;
 }
 
 .body-copy {
@@ -864,9 +874,8 @@ h1 span { display: block; }
 
   .eyebrow-rule { width: clamp(5rem, 5vw, 12rem); }
 
-  h1 {
-    max-width: 12ch;
-    font-size: clamp(6.8rem, 3.65vw, 8.75rem);
+  .hero-headline {
+    font-size: clamp(5.1rem, 2.8vw, 6.6rem);
   }
 
   .body-copy {
@@ -959,7 +968,7 @@ h1 span { display: block; }
   .hero-grid { grid-template-columns: minmax(0, 40fr) minmax(6.1rem, 13fr) minmax(0, 47fr); }
   .copy-column { padding-right: 1.1rem; }
   .copy-reserve { min-height: 17.5rem; }
-  h1 { font-size: clamp(2.25rem, 3.8vw, 3.1rem); }
+  .hero-headline { font-size: clamp(2rem, 2.95vw, 2.55rem); }
   .body-copy { font-size: 0.75rem; line-height: 1.66; }
   .memory-line { font-size: 0.7rem; }
   .chip-list li { height: 1.95rem; padding: 0 0.55rem; font-size: 0.58rem; }
@@ -1006,9 +1015,9 @@ h1 span { display: block; }
     height: 25rem;
     min-height: 25rem;
     justify-content: space-between;
-    overflow: hidden;
+    overflow: visible;
   }
-  h1 { max-width: 12ch; font-size: clamp(2.55rem, 8vw, 4.5rem); }
+  .hero-headline { font-size: clamp(2.25rem, 6.5vw, 3.65rem); }
   .body-copy { max-width: 42rem; font-size: clamp(0.92rem, 2.1vw, 1.08rem); }
   .memory-line { max-width: 42rem; font-size: clamp(0.82rem, 1.8vw, 0.98rem); }
   .chip-list {
@@ -1095,7 +1104,7 @@ h1 span { display: block; }
   .locale-switch button { font-size: 0.68rem; }
   .copy-column { padding-top: 2.4rem; }
   .eyebrow { margin-bottom: 0.85rem; font-size: 0.68rem; }
-  h1 { font-size: clamp(2.25rem, 11.5vw, 3.25rem); }
+  .hero-headline { font-size: clamp(2.05rem, 9.6vw, 2.85rem); }
   .body-copy { font-size: 0.88rem; line-height: 1.68; }
   .memory-line { font-size: 0.78rem; }
   .chip-list { gap: 0.42rem; }
