@@ -11,6 +11,7 @@ The website is a static GitHub Pages project with no build step or backend:
 - `index.html` — semantic page structure and accessible controls.
 - `styles.css` — visual system, responsive layout, and motion preferences.
 - `app.js` — Vue 2 state, bilingual copy, carousel behavior, and release-state loading.
+- `DESIGN_GUIDE.md` — shared typography, color, spacing, control, icon, and motion rules.
 - `assets/` — approved brand artwork, layered hero artwork, and real product screenshots.
 - `update/latest.json` — the single source of truth for download availability.
 - `update/appcast-macos-arm64.xml` and `update/appcast-windows-x64.xml` — signed, derived platform feeds generated only from verified release data.

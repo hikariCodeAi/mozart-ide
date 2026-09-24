@@ -235,13 +235,7 @@
                   @error="markImageFailed(nextSlide.image)"
                 >
               </div>
-
-              <button class="arrow arrow-left" type="button" :aria-label="ui.previous" @click="previous">
-                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg>
-              </button>
-              <button class="arrow arrow-right" type="button" :aria-label="ui.next" @click="next">
-                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg>
-              </button>
+              <div class="stack-card" aria-hidden="true"></div>
             </div>
           </div>
         </section>
@@ -255,6 +249,11 @@
           </ul>
 
           <div class="tabs-wrap">
+            <button class="arrow arrow-left" type="button" :aria-label="ui.previous" @click="previous">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg>
+              <span class="arrow-label">{{ ui.previous }}</span>
+            </button>
+
             <div class="tabs" role="tablist" :aria-label="ui.slideNavigation">
               <button
                 v-for="(slide, index) in slides"
@@ -273,23 +272,38 @@
               >
                 <span class="tab-number">{{ pad(index + 1) }}</span>
                 <span class="tab-label">{{ slide.tab }}</span>
-                <span v-if="currentIndex === index" class="progress-track" aria-hidden="true">
-                  <span class="progress-value" :style="{ transform: 'scaleX(' + progressRatio + ')' }"></span>
+                <span
+                  class="progress-track"
+                  :class="{ active: currentIndex === index, completed: index < currentIndex }"
+                  aria-hidden="true"
+                >
+                  <span
+                    v-if="currentIndex === index"
+                    class="progress-value"
+                    :style="{ transform: 'scaleX(' + progressRatio + ')' }"
+                  ></span>
                 </span>
               </button>
             </div>
 
-            <button
-              class="pause-button"
-              type="button"
-              :aria-label="explicitPaused ? ui.play : ui.pause"
-              :aria-pressed="explicitPaused.toString()"
-              @click="togglePause"
-            >
-              <svg v-if="explicitPaused" aria-hidden="true" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7V5Z"/></svg>
-              <svg v-else aria-hidden="true" viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></svg>
+            <div class="playback-control">
+              <button
+                class="pause-button"
+                type="button"
+                :aria-label="explicitPaused ? ui.play : ui.pause"
+                :aria-pressed="explicitPaused.toString()"
+                @click="togglePause"
+              >
+                <svg v-if="explicitPaused" aria-hidden="true" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7V5Z"/></svg>
+                <svg v-else aria-hidden="true" viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></svg>
+              </button>
+              <span class="duration" aria-hidden="true">8s</span>
+            </div>
+
+            <button class="arrow arrow-right" type="button" :aria-label="ui.next" @click="next">
+              <span class="arrow-label">{{ ui.next }}</span>
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg>
             </button>
-            <span class="duration" aria-hidden="true">8s</span>
           </div>
         </div>
 
