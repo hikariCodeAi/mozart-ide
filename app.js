@@ -60,8 +60,8 @@
           chips: ["GPU 硬件直描", "C++ 调度底层", "零 GC 开销", "亚毫秒级响应"],
           cta: "查看性能证据",
           tab: "系统性能",
-          image: "assets/screenshots/performance-evidence-1710x1030.png",
-          alt: "Mozart IDE 真实运行界面，用于可复现性能测量的证据截图",
+          image: "assets/performance/performance-comparison-concept-1710x1030.png",
+          alt: "Mozart、VS Code、WebStorm 和 Zed 的性能指标对比视觉样稿，数字为估算占位，非实测",
         },
         {
           eyebrow: "02 / 原厂 Harness 架构",
@@ -152,8 +152,8 @@
           chips: ["GPU Direct Render", "C++ Low-level Dispatch", "Zero GC Pauses", "Sub-millisecond"],
           cta: "View performance evidence",
           tab: "Performance",
-          image: "assets/screenshots/performance-evidence-1710x1030.png",
-          alt: "A real Mozart IDE session prepared for reproducible performance measurement",
+          image: "assets/performance/performance-comparison-concept-1710x1030.png",
+          alt: "Performance comparison concept for Mozart, VS Code, WebStorm, and Zed; numbers are illustrative estimates, not measurements",
         },
         {
           eyebrow: "02 / OFFICIAL AGENT HARNESS",
