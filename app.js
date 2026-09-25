@@ -4,6 +4,38 @@
   const SLIDE_DURATION = 8000;
   const TRANSITION_DURATION = 440;
   const RELEASES_URL = "https://github.com/hikariCodeAi/mozart-ide/releases";
+  const PERFORMANCE_METRICS = [
+    {
+      values: ["180 ms", "240 ms", "1,450 ms", "4,200 ms"],
+      zh: { name: "冷启动就绪", reason: "纯 C++ 原生启动，减少运行时初始化的等待。" },
+      en: { name: "Cold start", reason: "Native C++ startup reduces runtime initialization work." },
+    },
+    {
+      values: ["68 MB", "95 MB", "380 MB", "1,250 MB"],
+      zh: { name: "初始空闲内存", reason: "紧凑对象布局与按需加载，减少空闲时的常驻占用。" },
+      en: { name: "Idle memory", reason: "Compact data structures and on-demand loading reduce resident memory at idle." },
+    },
+    {
+      values: ["165 MB", "240 MB", "980 MB", "2,850 MB"],
+      zh: { name: "100 万行项目常驻内存", shortName: "百万行项目内存", reason: "按需索引与可控的内存生命周期，降低大型项目的常驻占用。" },
+      en: { name: "1M-line project memory", shortName: "1M-line memory", reason: "On-demand indexing and controlled memory lifecycles limit large-project residency." },
+    },
+    {
+      values: ["1.8 ms", "3.5 ms", "18.2 ms", "36.5 ms"],
+      zh: { name: "击键到屏幕首帧延迟 P99", shortName: "击键到屏幕 P99", reason: "原生 GPU 绘制让输入后的界面更新更直接。" },
+      en: { name: "Key-to-screen P99", reason: "Native GPU drawing shortens the path from input to the next frame." },
+    },
+    {
+      values: ["0.0 ms", "0.0 ms", "≈42 ms", "≈260 ms"],
+      zh: { name: "垃圾回收停顿", reason: "C++ 显式管理对象生命周期，不依赖周期性的垃圾回收。" },
+      en: { name: "GC pauses", reason: "Explicit C++ object lifecycles avoid periodic garbage collection." },
+    },
+    {
+      values: ["42 ms", "85 ms", "720 ms", "2,100 ms"],
+      zh: { name: "50 MB 加载与语法树", shortName: "50 MB 加载+语法树", reason: "流式分块解析，避免一次性处理整份大文件。" },
+      en: { name: "50 MB load and syntax tree", shortName: "50 MB load + AST", reason: "Streaming, chunked parsing avoids processing the whole large file at once." },
+    },
+  ];
 
   const TRANSLATIONS = {
     zh: {
@@ -32,12 +64,21 @@
         evidenceLabel: "性能证据项目",
         evidencePending: "性能证据将在真实测量后公开",
         noFabrication: "不生成虚假 IDE 界面，不编造性能数字。",
+        performanceLabel: "四款编辑器的用户提供实测性能对比",
+        performanceMeasured: "实测",
+        closePerformance: "关闭性能对比",
+        performanceBrands: [
+          { name: "Mozart IDE", stack: "纯 C++" },
+          { name: "Zed", stack: "Rust" },
+          { name: "VS Code", stack: "Electron" },
+          { name: "WebStorm", stack: "JVM" },
+        ],
         status: (index, title) => `第 ${index} 张，共 5 张：${title}`,
         evidence: [
           { label: "冷启动", icon: "ϟ" },
           { label: "内存 RSS", icon: "▦" },
-          { label: "搜索 P95", icon: "⌕" },
-          { label: "实测后公开", icon: "▥" },
+          { label: "大文件加载", icon: "⌕" },
+          { label: "用户实测", icon: "▥" },
         ],
       },
       slides: [
@@ -54,14 +95,14 @@
         },
         {
           eyebrow: "01 / 系统级原生动力",
-          headline: "纯 C++ 工业底座，终结无谓资源开销。",
-          body: "采用全自研原生 GPU 渲染管线，从每个像素的抗锯齿到多级窗口的丝滑展开，皆经过严苛物理校准。剔除一切不必要的解释层与中间虚拟环境，以原生机器码直接驱动。内存开辟严谨有序，垃圾回收彻底归零，在数十万源码文件中实现近乎即时的亚毫秒反馈。",
-          memory: "“你可以感受到的速度体验，在你每一次打开项目、每一次 Diff、每一次变量溯源。”",
-          chips: ["GPU 硬件直描", "C++ 调度底层", "零 GC 开销", "亚毫秒级响应"],
-          cta: "查看性能证据",
+          headline: "以原生 C++，换回直接响应。",
+          body: "六项用户提供的实测数据，覆盖启动、内存、输入延迟、垃圾回收与大文件加载。悬停或点按任一行，查看背后的设计原因。",
+          memory: "每一个数字，都可以复测。",
+          chips: ["原生 C++", "按需索引", "GPU 绘制", "显式内存"],
+          cta: "放大查看数据",
           tab: "系统性能",
-          image: "assets/performance/performance-comparison-concept-1710x1030.png",
-          alt: "Mozart、VS Code、WebStorm 和 Zed 的性能指标对比视觉样稿，数字为估算占位，非实测",
+          image: null,
+          alt: "Mozart IDE、Zed、VS Code 和 WebStorm 的六项用户提供实测性能对比",
         },
         {
           eyebrow: "02 / 原厂 Harness 架构",
@@ -124,12 +165,21 @@
         evidenceLabel: "Performance evidence categories",
         evidencePending: "Performance evidence will be published after real measurement",
         noFabrication: "No synthetic IDE screen. No invented performance numbers.",
+        performanceLabel: "User-supplied measurements comparing four editors",
+        performanceMeasured: "Measured",
+        closePerformance: "Close performance comparison",
+        performanceBrands: [
+          { name: "Mozart IDE", stack: "Native C++" },
+          { name: "Zed", stack: "Rust" },
+          { name: "VS Code", stack: "Electron" },
+          { name: "WebStorm", stack: "JVM" },
+        ],
         status: (index, title) => `Slide ${index} of 5: ${title}`,
         evidence: [
           { label: "Cold start", icon: "ϟ" },
           { label: "Memory RSS", icon: "▦" },
-          { label: "Search P95", icon: "⌕" },
-          { label: "Published after measurement", icon: "▥" },
+          { label: "Large-file load", icon: "⌕" },
+          { label: "User measurements", icon: "▥" },
         ],
       },
       slides: [
@@ -146,14 +196,14 @@
         },
         {
           eyebrow: "01 / SYSTEM-LEVEL NATIVE POWER",
-          headline: "Pure C++ industrial foundation. Eliminating wasteful overhead.",
-          body: "Powered by a proprietary native GPU rendering pipeline, every pixel of antialiasing and every smooth multi-window transition is strictly physically calibrated. We strip away unnecessary interpreted runtimes and intermediate virtual machines, driving directly with native machine code. Strict memory lifecycles and zero garbage collection deliver near-instantaneous sub-millisecond feedback across hundreds of thousands of files.",
-          memory: "“Speed you can feel in every project opened, every diff compared, and every symbol traced.”",
-          chips: ["GPU Direct Render", "C++ Low-level Dispatch", "Zero GC Pauses", "Sub-millisecond"],
-          cta: "View performance evidence",
+          headline: "Native C++. Direct response.",
+          body: "Six user-supplied measurements cover startup, memory, input latency, garbage collection, and large-file loading. Hover or tap a row to see the design behind it.",
+          memory: "Every number can be measured again.",
+          chips: ["Native C++", "On-demand Index", "GPU Drawing", "Explicit Memory"],
+          cta: "Enlarge comparison",
           tab: "Performance",
-          image: "assets/performance/performance-comparison-concept-1710x1030.png",
-          alt: "Performance comparison concept for Mozart, VS Code, WebStorm, and Zed; numbers are illustrative estimates, not measurements",
+          image: null,
+          alt: "Six user-supplied measurements comparing Mozart IDE, Zed, VS Code, and WebStorm",
         },
         {
           eyebrow: "02 / OFFICIAL AGENT HARNESS",
@@ -220,6 +270,10 @@
       transitioning: false,
       transitionTimer: 0,
       touchStart: null,
+      hoveredMetricIndex: null,
+      focusedMetricIndex: null,
+      pinnedMetricIndex: null,
+      performanceDialogOpen: false,
       failedImages: {},
       release: {
         available: false,
@@ -231,6 +285,20 @@
       ui() { return this.dictionary.ui; },
       slides() { return this.dictionary.slides; },
       activeSlide() { return this.slides[this.currentIndex]; },
+      performanceMetrics() {
+        return PERFORMANCE_METRICS.map((metric) => ({
+          values: metric.values,
+          name: metric[this.locale].name,
+          shortName: metric[this.locale].shortName || metric[this.locale].name,
+          reason: metric[this.locale].reason,
+        }));
+      },
+      activeMetricIndex() {
+        return this.hoveredMetricIndex ?? this.focusedMetricIndex ?? this.pinnedMetricIndex;
+      },
+      activeMetric() {
+        return this.activeMetricIndex === null ? null : this.performanceMetrics[this.activeMetricIndex];
+      },
       headlineParts() {
         const parts = this.activeSlide.headline.match(/[^。！？.!?]+[。！？.!?]?/g) || [this.activeSlide.headline];
         return parts.map((part) => part.trim()).filter(Boolean);
@@ -238,7 +306,8 @@
       nextSlide() { return this.slides[(this.currentIndex + 1) % this.slides.length]; },
       progressRatio() { return Math.min(this.elapsed / SLIDE_DURATION, 1).toFixed(4); },
       autoplayPaused() {
-        return this.explicitPaused || this.pointerInside || this.focusInside || this.documentHidden || this.reducedMotion;
+        return this.explicitPaused || this.pointerInside || this.focusInside
+          || this.performanceDialogOpen || this.documentHidden || this.reducedMotion;
       },
       liveStatus() { return this.ui.status(this.currentIndex + 1, this.activeSlide.headline); },
     },
@@ -247,7 +316,12 @@
         this.applyMetadata();
         this.preloadImages();
       },
-      currentIndex() { this.preloadImages(); },
+      currentIndex() {
+        this.hoveredMetricIndex = null;
+        this.focusedMetricIndex = null;
+        this.pinnedMetricIndex = null;
+        this.preloadImages();
+      },
     },
     created() {
       this.motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -267,6 +341,7 @@
       this.animationFrame = window.requestAnimationFrame(this.tick);
     },
     beforeDestroy() {
+      this.closePerformanceDialog();
       window.cancelAnimationFrame(this.animationFrame);
       window.clearTimeout(this.transitionTimer);
       document.removeEventListener("visibilitychange", this.onVisibilityChange);
@@ -303,6 +378,14 @@
       previous() { this.changeSlide(this.currentIndex - 1); },
       next() { this.changeSlide(this.currentIndex + 1); },
       togglePause() { this.explicitPaused = !this.explicitPaused; },
+      toggleMetric(index) {
+        this.pinnedMetricIndex = this.pinnedMetricIndex === index ? null : index;
+      },
+      metricAccessibilityLabel(metric) {
+        const values = this.ui.performanceBrands
+          .map((brand, index) => `${brand.name} (${brand.stack}) ${metric.values[index]}`).join(", ");
+        return `${metric.name}. ${values}. ${metric.reason}`;
+      },
       setLocale(locale) {
         if (locale !== "zh" && locale !== "en") return;
         this.locale = locale;
@@ -325,7 +408,16 @@
         });
       },
       focusMedia() {
+        if (this.currentIndex === 1 && this.$refs.performanceDialog?.showModal) {
+          this.$refs.performanceDialog.showModal();
+          this.performanceDialogOpen = true;
+          return;
+        }
         if (this.$refs.media) this.$refs.media.focus();
+      },
+      closePerformanceDialog() {
+        if (this.$refs.performanceDialog?.open) this.$refs.performanceDialog.close();
+        this.performanceDialogOpen = false;
       },
       onTouchStart(event) {
         const touch = event.changedTouches && event.changedTouches[0];
@@ -349,7 +441,7 @@
       markImageFailed(path) { this.$set(this.failedImages, path, true); },
       preloadImages() {
         [this.activeSlide.image, this.nextSlide.image].forEach((path) => {
-          if (this.failedImages[path]) return;
+          if (!path || this.failedImages[path]) return;
           const image = new Image();
           image.src = path;
         });

@@ -20,6 +20,8 @@ The website is a static GitHub Pages project with no build step or backend:
 
 Vue 2.7.16 and Tailwind CSS Browser v4 are loaded from pinned jsDelivr URLs. There is no `package.json`, bundler, application server, database, PM2 process, SSH deployment, or server password in this repository.
 
+The performance carousel slot uses an interactive HTML comparison with six user-supplied measurements. Its rationale appears on hover, keyboard focus, or tap; the detail view makes values readable on phones. Global-search P95 is omitted pending actual measurement.
+
 ## Local development / 本地开发
 
 Run a static HTTP server from the repository root:

@@ -35,6 +35,6 @@ The background and composer art contain no UI or localized text. The composer mo
 
 All final carousel captures should use the same 1710 × 1030 viewport, dark theme, display scaling, window chrome, and safe demo repository. Remove tokens, usernames, private paths, and unrelated applications before capture.
 
-## Performance comparison concept
+## Performance comparison
 
-- `performance/performance-comparison-concept-1710x1030.png` — 1710 × 1030 visual concept used only in the performance carousel slot. Compares Mozart, VS Code, WebStorm, and Zed across cold start, idle RSS, project readiness, and global search P95. All displayed numbers are explicitly labeled as illustrative estimates, not measured results; replace them with reproducible measurements before presenting them as evidence.
+The performance carousel slot is rendered with HTML/CSS in `index.html` and `styles.css`, using the six user-supplied measurements in `app.js`. Hover, keyboard focus, or tap a metric to see its design rationale; the enlarge control opens a readable detail view on narrow screens. Global-search P95 is omitted until measured values are supplied.

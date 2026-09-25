@@ -84,6 +84,7 @@
         <section
           id="carousel-area"
           class="hero-grid"
+          :class="{ 'performance-active': currentIndex === 1 }"
           :aria-roledescription="ui.carousel"
           :aria-label="ui.carouselLabel"
           @mouseenter="pointerInside = true"
@@ -185,6 +186,7 @@
               id="carousel-media"
               ref="media"
               class="media-shell relative"
+              :class="{ 'performance-active': currentIndex === 1 }"
               role="group"
               tabindex="0"
               :aria-label="activeSlide.alt"
@@ -200,13 +202,63 @@
               </div>
 
               <div class="screenshot-window">
-                <div class="window-bar" aria-hidden="true">
+                <div v-if="currentIndex !== 1" class="window-bar" aria-hidden="true">
                   <span class="traffic red"></span><span class="traffic amber"></span><span class="traffic green"></span>
                   <span class="window-title">MOZART IDE</span>
                 </div>
                 <div class="screenshot-viewport">
+                  <div
+                    v-if="currentIndex === 1"
+                    class="performance-chart"
+                    :aria-label="ui.performanceLabel"
+                  >
+                    <div class="performance-heading" aria-hidden="true">
+                      <span class="performance-measured">{{ ui.performanceMeasured }}</span>
+                      <span
+                        v-for="brand in ui.performanceBrands"
+                        :key="brand.name"
+                        class="performance-brand"
+                      >
+                        <strong>{{ brand.name }}</strong>
+                        <small>({{ brand.stack }})</small>
+                      </span>
+                    </div>
+                    <div
+                      class="performance-rows"
+                      :style="{ gridTemplateRows: 'repeat(' + performanceMetrics.length + ', minmax(0, 1fr))' }"
+                    >
+                      <button
+                        v-for="(metric, index) in performanceMetrics"
+                        :key="metric.name"
+                        class="performance-row"
+                        :class="{ selected: activeMetricIndex === index }"
+                        type="button"
+                        :aria-label="metricAccessibilityLabel(metric)"
+                        :aria-pressed="pinnedMetricIndex === index"
+                        @mouseenter="hoveredMetricIndex = index"
+                        @mouseleave="hoveredMetricIndex = null"
+                        @focus="focusedMetricIndex = index"
+                        @blur="focusedMetricIndex = null"
+                        @click="toggleMetric(index)"
+                      >
+                        <span class="performance-name">
+                          <strong class="performance-name-full">{{ metric.name }}</strong>
+                          <strong class="performance-name-short">{{ metric.shortName }}</strong>
+                        </span>
+                        <span
+                          v-for="(value, valueIndex) in metric.values"
+                          :key="valueIndex"
+                          class="performance-value"
+                        >{{ value }}</span>
+                      </button>
+                    </div>
+                    <div v-if="activeMetric" class="performance-reason" role="status">
+                      <strong>{{ activeMetric.name }}</strong>
+                      <span>{{ activeMetric.reason }}</span>
+                    </div>
+                  </div>
                   <img
-                    v-if="!failedImages[activeSlide.image]"
+                    v-else-if="!failedImages[activeSlide.image]"
                     :key="activeSlide.image"
                     class="screenshot-image"
                     :class="{ changing: transitioning }"
@@ -227,13 +279,14 @@
 
               <div class="next-preview" aria-hidden="true">
                 <img
-                  v-if="!failedImages[nextSlide.image]"
+                  v-if="nextSlide.image && !failedImages[nextSlide.image]"
                   :src="nextSlide.image"
                   alt=""
                   loading="eager"
                   draggable="false"
                   @error="markImageFailed(nextSlide.image)"
                 >
+                <span v-else-if="!nextSlide.image" class="performance-preview-lines"></span>
               </div>
 
               <div class="tabs-wrap">
@@ -319,6 +372,38 @@
 
         <p class="sr-only" aria-live="polite" aria-atomic="true">{{ liveStatus }}</p>
       </main>
+
+      <dialog
+        ref="performanceDialog"
+        class="performance-dialog"
+        :aria-label="ui.performanceLabel"
+        @close="performanceDialogOpen = false"
+      >
+        <button
+          class="performance-dialog-close"
+          type="button"
+          :aria-label="ui.closePerformance"
+          @click="closePerformanceDialog"
+        >×</button>
+        <div class="performance-detail-list">
+          <section v-for="metric in performanceMetrics" :key="metric.name" class="performance-detail-card">
+            <div class="performance-detail-heading">
+              <h2>{{ metric.name }}</h2>
+              <span>{{ ui.performanceMeasured }}</span>
+            </div>
+            <dl class="performance-detail-values">
+              <div v-for="(value, index) in metric.values" :key="index">
+                <dt>
+                  <strong>{{ ui.performanceBrands[index].name }}</strong>
+                  <small>({{ ui.performanceBrands[index].stack }})</small>
+                </dt>
+                <dd>{{ value }}</dd>
+              </div>
+            </dl>
+            <p>{{ metric.reason }}</p>
+          </section>
+        </div>
+      </dialog>
     </div>
   </body>
 </html>
