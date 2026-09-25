@@ -85,14 +85,15 @@
           id="carousel-area"
           class="hero-grid"
           :class="{ 'performance-active': currentIndex === 1 }"
+          :style="{ '--slide-offset': slideDirection > 0 ? '1.25rem' : '-1.25rem' }"
           :aria-roledescription="ui.carousel"
           :aria-label="ui.carouselLabel"
           @mouseenter="pointerInside = true"
           @mouseleave="pointerInside = false"
           @focusin="focusInside = true"
           @focusout="handleFocusOut"
-          @keydown.left.prevent="previous"
-          @keydown.right.prevent="next"
+          @keydown.up.prevent="previous"
+          @keydown.down.prevent="next"
         >
           <div class="copy-column relative z-20 flex min-w-0 flex-col justify-center">
             <div class="copy-reserve" :class="{ changing: transitioning }">
@@ -190,8 +191,8 @@
               role="group"
               tabindex="0"
               :aria-label="activeSlide.alt"
-              @touchstart.passive="onTouchStart"
-              @touchend.passive="onTouchEnd"
+              @keydown.left.prevent="previousImage"
+              @keydown.right.prevent="nextImage"
             >
               <div class="score-line" aria-hidden="true">
                 <span class="score-gold">♪</span><span>♩</span><span>♫</span>
@@ -206,10 +207,15 @@
                   <span class="traffic red"></span><span class="traffic amber"></span><span class="traffic green"></span>
                   <span class="window-title">MOZART IDE</span>
                 </div>
-                <div class="screenshot-viewport">
+                <div
+                  class="screenshot-viewport"
+                  @touchstart.passive="onTouchStart"
+                  @touchend.passive="onTouchEnd"
+                >
                   <div
                     v-if="currentIndex === 1"
                     class="performance-chart"
+                    :class="{ changing: transitioning }"
                     :aria-label="ui.performanceLabel"
                   >
                     <div class="performance-heading" aria-hidden="true">
@@ -258,16 +264,16 @@
                     </div>
                   </div>
                   <img
-                    v-else-if="!failedImages[activeSlide.image]"
-                    :key="activeSlide.image"
+                    v-else-if="activeImage && !failedImages[activeImage]"
+                    :key="currentIndex + '-' + currentImageIndex"
                     class="screenshot-image"
-                    :class="{ changing: transitioning }"
-                    :src="activeSlide.image"
+                    :class="{ changing: transitioning, 'changing-horizontal': imageTransitioning }"
+                    :src="activeImage"
                     :alt="activeSlide.alt"
-                    :fetchpriority="currentIndex === 0 ? 'high' : 'auto'"
+                    :fetchpriority="currentIndex === 0 && currentImageIndex === 0 ? 'high' : 'auto'"
                     loading="eager"
                     draggable="false"
-                    @error="markImageFailed(activeSlide.image)"
+                    @error="markImageFailed(activeImage)"
                   >
                   <div v-else class="evidence-placeholder" role="img" :aria-label="activeSlide.alt">
                     <img src="assets/brand/mozart-app-icon-256.png" alt="">
@@ -277,16 +283,31 @@
                 </div>
               </div>
 
+              <div
+                v-if="activeImages.length > 1"
+                class="image-controls"
+                role="group"
+                :aria-label="ui.imagePosition(currentImageIndex + 1, activeImages.length)"
+              >
+                <button type="button" :aria-label="ui.previousImage" @click="previousImage">
+                  <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg>
+                </button>
+                <span aria-hidden="true">{{ pad(currentImageIndex + 1) }} / {{ pad(activeImages.length) }}</span>
+                <button type="button" :aria-label="ui.nextImage" @click="nextImage">
+                  <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg>
+                </button>
+              </div>
+
               <div class="next-preview" aria-hidden="true">
                 <img
-                  v-if="nextSlide.image && !failedImages[nextSlide.image]"
-                  :src="nextSlide.image"
+                  v-if="nextSlideImage && !failedImages[nextSlideImage]"
+                  :src="nextSlideImage"
                   alt=""
                   loading="eager"
                   draggable="false"
-                  @error="markImageFailed(nextSlide.image)"
+                  @error="markImageFailed(nextSlideImage)"
                 >
-                <span v-else-if="!nextSlide.image" class="performance-preview-lines"></span>
+                <span v-else-if="!nextSlideImage" class="performance-preview-lines"></span>
               </div>
 
               <div class="tabs-wrap">
@@ -337,13 +358,13 @@
                 </div>
 
                 <div class="spine-arrows">
-                  <button class="arrow arrow-left" type="button" :aria-label="ui.previous" @click="previous">
-                    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg>
+                  <button class="arrow arrow-up" type="button" :aria-label="ui.previous" @click="previous">
+                    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m5 15 7-7 7 7"/></svg>
                     <span class="arrow-label">{{ ui.previous }}</span>
                   </button>
-                  <button class="arrow arrow-right" type="button" :aria-label="ui.next" @click="next">
+                  <button class="arrow arrow-down" type="button" :aria-label="ui.next" @click="next">
                     <span class="arrow-label">{{ ui.next }}</span>
-                    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg>
+                    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m5 9 7 7 7-7"/></svg>
                   </button>
                 </div>
               </div>

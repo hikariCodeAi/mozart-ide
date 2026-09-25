@@ -22,6 +22,8 @@ Vue 2.7.16 and Tailwind CSS Browser v4 are loaded from pinned jsDelivr URLs. The
 
 The performance carousel slot uses an interactive HTML comparison with six user-supplied measurements. Its rationale appears on hover, keyboard focus, or tap; the detail view makes values readable on phones. Global-search P95 is omitted pending actual measurement.
 
+The five feature slides advance vertically every 8 seconds. Each image slide has two horizontal screenshot slots that advance every 4 seconds; both slots currently reference the same approved capture until a second real screenshot is available. The performance comparison remains an interactive HTML slide. Manual arrows, keyboard navigation, and touch gestures work in both directions.
+
 ## Local development / 本地开发
 
 Run a static HTTP server from the repository root:
@@ -41,7 +43,7 @@ Check these viewports after visible changes:
 - `1920×1080`, `1440×900`, `1280×720`
 - `768×1024`, `390×844`
 
-Desktop layouts must fit within `100svh`; mobile layouts may scroll vertically but must not overflow horizontally. Also verify both languages, all four carousel states, keyboard and touch navigation, pause/autoplay, persisted language, and reduced-motion behavior.
+Desktop layouts must fit within `100svh`; mobile layouts may scroll vertically but must not overflow horizontally. Also verify both languages, all five feature slides and their image slots, keyboard and touch navigation, pause/autoplay, persisted language, and reduced-motion behavior.
 
 Basic source checks:
 

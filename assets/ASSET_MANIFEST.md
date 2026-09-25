@@ -35,6 +35,8 @@ The background and composer art contain no UI or localized text. The composer mo
 
 All final carousel captures should use the same 1710 × 1030 viewport, dark theme, display scaling, window chrome, and safe demo repository. Remove tokens, usernames, private paths, and unrelated applications before capture.
 
+The four image-based feature slides currently use the same approved capture twice in their `images` arrays in `app.js`. These are two slideshow positions, not separate files. Replace each second path only after a second real capture is approved; keep the 171:103 canvas ratio.
+
 ## Performance comparison
 
 The performance carousel slot is rendered with HTML/CSS in `index.html` and `styles.css`, using the six user-supplied measurements in `app.js`. Hover, keyboard focus, or tap a metric to see its design rationale; the enlarge control opens a readable detail view on narrow screens. Global-search P95 is omitted until measured values are supplied.

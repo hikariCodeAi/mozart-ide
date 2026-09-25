@@ -2,6 +2,7 @@
   "use strict";
 
   const SLIDE_DURATION = 8000;
+  const IMAGE_DURATION = 4000;
   const TRANSITION_DURATION = 440;
   const RELEASES_URL = "https://github.com/hikariCodeAi/mozart-ide/releases";
   const PERFORMANCE_METRICS = [
@@ -56,8 +57,11 @@
         carousel: "轮播",
         carouselLabel: "Mozart IDE 核心能力",
         capabilities: "当前能力",
-        previous: "上一张",
-        next: "下一张",
+        previous: "上一组",
+        next: "下一组",
+        previousImage: "上一张截图",
+        nextImage: "下一张截图",
+        imagePosition: (index, total) => `第 ${index} 张截图，共 ${total} 张`,
         pause: "暂停自动播放",
         play: "继续自动播放",
         slideNavigation: "选择能力页面",
@@ -90,18 +94,21 @@
           chips: ["审阅优先", "性能优先", "AI 优先"],
           cta: "探索 Mozart",
           tab: "前言",
-          image: "assets/screenshots/performance-evidence-1710x1030.png",
+          images: [
+            "assets/screenshots/performance-evidence-1710x1030.png",
+            "assets/screenshots/performance-evidence-1710x1030.png",
+          ],
           alt: "Mozart IDE 真实工作区全貌与代码界面截图",
         },
         {
           eyebrow: "01 / 系统级原生动力",
-          headline: "以原生 C++，换回直接响应。",
-          body: "六项用户提供的实测数据，覆盖启动、内存、输入延迟、垃圾回收与大文件加载。悬停或点按任一行，查看背后的设计原因。",
-          memory: "每一个数字，都可以复测。",
-          chips: ["原生 C++", "按需索引", "GPU 绘制", "显式内存"],
-          cta: "放大查看数据",
+          headline: "纯 C++ 工业底座，终结无谓资源开销。",
+          body: "采用全自研原生 GPU 渲染管线，从每个像素的抗锯齿到多级窗口的丝滑展开，皆经过严苛物理校准。剔除一切不必要的解释层与中间虚拟环境，以原生机器码直接驱动。内存开辟严谨有序，垃圾回收彻底归零，在数十万源码文件中实现近乎即时的亚毫秒反馈。",
+          memory: "“你可以感受到的速度体验，在你每一次打开项目、每一次 Diff、每一次变量溯源。”",
+          chips: ["GPU 硬件直描", "C++ 调度底层", "零 GC 开销", "亚毫秒级响应"],
+          cta: "查看性能证据",
           tab: "系统性能",
-          image: null,
+          images: [],
           alt: "Mozart IDE、Zed、VS Code 和 WebStorm 的六项用户提供实测性能对比",
         },
         {
@@ -112,7 +119,10 @@
           chips: ["官方 CLI 调度", "隔离环境运行", "零损耗 Harness", "全功能透传"],
           cta: "探索 Agent 套件",
           tab: "官方宿主",
-          image: "assets/screenshots/official-agent-cli-1710x1030.png",
+          images: [
+            "assets/screenshots/official-agent-cli-1710x1030.png",
+            "assets/screenshots/official-agent-cli-1710x1030.png",
+          ],
           alt: "Mozart IDE 中的官方 Agent CLI 工作流真实截图",
         },
         {
@@ -123,7 +133,10 @@
           chips: ["双栏毫秒 Diff", "JetBrains 键位全兼容", "语法语义对齐", "高效审阅流"],
           cta: "查看审阅视窗",
           tab: "专业审查",
-          image: "assets/screenshots/review-diff-1710x1030.png",
+          images: [
+            "assets/screenshots/review-diff-1710x1030.png",
+            "assets/screenshots/review-diff-1710x1030.png",
+          ],
           alt: "Mozart IDE 代码 Diff 终审界面真实截图",
         },
         {
@@ -134,7 +147,10 @@
           chips: ["便捷直达", "GPU 细腻交互", "克制减法", "专注高效"],
           cta: "品鉴交互细节",
           tab: "好看更好用",
-          image: "assets/screenshots/git-command-center-1710x1030.png",
+          images: [
+            "assets/screenshots/git-command-center-1710x1030.png",
+            "assets/screenshots/git-command-center-1710x1030.png",
+          ],
           alt: "Mozart IDE 项目管理、终端与 Git 工作区真实截图",
         },
       ],
@@ -157,8 +173,11 @@
         carousel: "carousel",
         carouselLabel: "Mozart IDE core capabilities",
         capabilities: "Current capabilities",
-        previous: "Previous slide",
-        next: "Next slide",
+        previous: "Previous section",
+        next: "Next section",
+        previousImage: "Previous screenshot",
+        nextImage: "Next screenshot",
+        imagePosition: (index, total) => `Screenshot ${index} of ${total}`,
         pause: "Pause autoplay",
         play: "Resume autoplay",
         slideNavigation: "Choose a capability slide",
@@ -191,18 +210,21 @@
           chips: ["Review First", "Performance First", "AI First"],
           cta: "Explore Mozart",
           tab: "Prologue",
-          image: "assets/screenshots/performance-evidence-1710x1030.png",
+          images: [
+            "assets/screenshots/performance-evidence-1710x1030.png",
+            "assets/screenshots/performance-evidence-1710x1030.png",
+          ],
           alt: "Mozart IDE workspace overview capture",
         },
         {
           eyebrow: "01 / SYSTEM-LEVEL NATIVE POWER",
-          headline: "Native C++. Direct response.",
-          body: "Six user-supplied measurements cover startup, memory, input latency, garbage collection, and large-file loading. Hover or tap a row to see the design behind it.",
-          memory: "Every number can be measured again.",
-          chips: ["Native C++", "On-demand Index", "GPU Drawing", "Explicit Memory"],
-          cta: "Enlarge comparison",
+          headline: "Pure C++ industrial foundation. Eliminating wasteful overhead.",
+          body: "Powered by a proprietary native GPU rendering pipeline, every pixel of antialiasing and every smooth multi-window transition is strictly physically calibrated. We strip away unnecessary interpreted runtimes and intermediate virtual machines, driving directly with native machine code. Strict memory lifecycles and zero garbage collection deliver near-instantaneous sub-millisecond feedback across hundreds of thousands of files.",
+          memory: "“Speed you can feel in every project opened, every diff compared, and every symbol traced.”",
+          chips: ["GPU Direct Render", "C++ Low-level Dispatch", "Zero GC Pauses", "Sub-millisecond"],
+          cta: "View performance evidence",
           tab: "Performance",
-          image: null,
+          images: [],
           alt: "Six user-supplied measurements comparing Mozart IDE, Zed, VS Code, and WebStorm",
         },
         {
@@ -213,7 +235,10 @@
           chips: ["Official CLI Dispatch", "Isolated Environment", "Zero-Loss Harness", "Full Passthrough"],
           cta: "Explore the Agent workflow",
           tab: "Official Host",
-          image: "assets/screenshots/official-agent-cli-1710x1030.png",
+          images: [
+            "assets/screenshots/official-agent-cli-1710x1030.png",
+            "assets/screenshots/official-agent-cli-1710x1030.png",
+          ],
           alt: "A real Mozart IDE capture showing the official Agent CLI workflow",
         },
         {
@@ -224,7 +249,10 @@
           chips: ["Sub-ms Dual Diff", "JetBrains Keymap", "AST Semantic Align", "Review Pipeline"],
           cta: "Explore Review",
           tab: "Code Review",
-          image: "assets/screenshots/review-diff-1710x1030.png",
+          images: [
+            "assets/screenshots/review-diff-1710x1030.png",
+            "assets/screenshots/review-diff-1710x1030.png",
+          ],
           alt: "A real Mozart IDE capture showing the final code-diff review surface",
         },
         {
@@ -235,7 +263,10 @@
           chips: ["Direct & Fast", "Subtle GPU Motion", "Focused Subtraction", "High Efficiency"],
           cta: "Inspect Craftsmanship",
           tab: "Experience",
-          image: "assets/screenshots/git-command-center-1710x1030.png",
+          images: [
+            "assets/screenshots/git-command-center-1710x1030.png",
+            "assets/screenshots/git-command-center-1710x1030.png",
+          ],
           alt: "A real Mozart IDE capture showing Git history and a multi-project command workspace",
         },
       ],
@@ -259,7 +290,9 @@
     data: {
       locale: initialLocale,
       currentIndex: 0,
+      currentImageIndex: 0,
       elapsed: 0,
+      imageElapsed: 0,
       lastFrame: 0,
       animationFrame: 0,
       explicitPaused: false,
@@ -268,7 +301,10 @@
       documentHidden: document.hidden,
       reducedMotion: false,
       transitioning: false,
+      slideDirection: 1,
       transitionTimer: 0,
+      imageTransitioning: false,
+      imageTransitionTimer: 0,
       touchStart: null,
       hoveredMetricIndex: null,
       focusedMetricIndex: null,
@@ -285,6 +321,9 @@
       ui() { return this.dictionary.ui; },
       slides() { return this.dictionary.slides; },
       activeSlide() { return this.slides[this.currentIndex]; },
+      activeImages() { return this.activeSlide.images || []; },
+      activeImage() { return this.activeImages[this.currentImageIndex] || null; },
+      nextSlideImage() { return (this.nextSlide.images || [])[0] || null; },
       performanceMetrics() {
         return PERFORMANCE_METRICS.map((metric) => ({
           values: metric.values,
@@ -317,6 +356,10 @@
         this.preloadImages();
       },
       currentIndex() {
+        this.currentImageIndex = 0;
+        this.imageElapsed = 0;
+        this.imageTransitioning = false;
+        window.clearTimeout(this.imageTransitionTimer);
         this.hoveredMetricIndex = null;
         this.focusedMetricIndex = null;
         this.pinnedMetricIndex = null;
@@ -344,6 +387,7 @@
       this.closePerformanceDialog();
       window.cancelAnimationFrame(this.animationFrame);
       window.clearTimeout(this.transitionTimer);
+      window.clearTimeout(this.imageTransitionTimer);
       document.removeEventListener("visibilitychange", this.onVisibilityChange);
       if (this.motionQuery.removeEventListener) this.motionQuery.removeEventListener("change", this.onMotionChange);
       else this.motionQuery.removeListener(this.onMotionChange);
@@ -356,6 +400,10 @@
         this.lastFrame = timestamp;
         if (!this.autoplayPaused) {
           this.elapsed += delta;
+          if (this.activeImages.length > 1) {
+            this.imageElapsed += delta;
+            if (this.imageElapsed >= IMAGE_DURATION) this.changeImage(this.currentImageIndex + 1, false);
+          }
           if (this.elapsed >= SLIDE_DURATION) this.next();
         }
         this.animationFrame = window.requestAnimationFrame(this.tick);
@@ -367,6 +415,7 @@
           return;
         }
         window.clearTimeout(this.transitionTimer);
+        this.slideDirection = index < this.currentIndex ? -1 : 1;
         if (!this.reducedMotion) this.transitioning = true;
         this.currentIndex = normalized;
         this.elapsed = 0;
@@ -377,6 +426,22 @@
       goTo(index) { this.changeSlide(index); },
       previous() { this.changeSlide(this.currentIndex - 1); },
       next() { this.changeSlide(this.currentIndex + 1); },
+      changeImage(index, manual = true) {
+        if (this.activeImages.length < 2) return;
+        const normalized = (index + this.activeImages.length) % this.activeImages.length;
+        if (normalized !== this.currentImageIndex) {
+          window.clearTimeout(this.imageTransitionTimer);
+          if (!this.reducedMotion) this.imageTransitioning = true;
+          this.currentImageIndex = normalized;
+          this.imageTransitionTimer = window.setTimeout(() => {
+            this.imageTransitioning = false;
+          }, this.reducedMotion ? 0 : TRANSITION_DURATION);
+        }
+        this.imageElapsed = 0;
+        if (manual) this.elapsed = 0;
+      },
+      previousImage() { this.changeImage(this.currentImageIndex - 1); },
+      nextImage() { this.changeImage(this.currentImageIndex + 1); },
       togglePause() { this.explicitPaused = !this.explicitPaused; },
       toggleMetric(index) {
         this.pinnedMetricIndex = this.pinnedMetricIndex === index ? null : index;
@@ -430,9 +495,13 @@
         const dx = touch.clientX - this.touchStart.x;
         const dy = touch.clientY - this.touchStart.y;
         this.touchStart = null;
-        if (Math.abs(dx) < 45 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
-        if (dx < 0) this.next();
-        else this.previous();
+        if (Math.abs(dx) >= 45 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+          if (dx < 0) this.nextImage();
+          else this.previousImage();
+        } else if (Math.abs(dy) >= 45 && Math.abs(dy) > Math.abs(dx) * 1.2) {
+          if (dy < 0) this.next();
+          else this.previous();
+        }
       },
       onVisibilityChange() {
         this.documentHidden = document.hidden;
@@ -440,7 +509,10 @@
       },
       markImageFailed(path) { this.$set(this.failedImages, path, true); },
       preloadImages() {
-        [this.activeSlide.image, this.nextSlide.image].forEach((path) => {
+        const followingImage = this.activeImages.length > 1
+          ? this.activeImages[(this.currentImageIndex + 1) % this.activeImages.length]
+          : null;
+        new Set([this.activeImage, followingImage, this.nextSlideImage]).forEach((path) => {
           if (!path || this.failedImages[path]) return;
           const image = new Image();
           image.src = path;
