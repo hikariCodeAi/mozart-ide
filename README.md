@@ -24,6 +24,8 @@ The performance carousel slot uses an interactive HTML comparison with six user-
 
 The five feature slides advance vertically every 8 seconds. Each image slide has two horizontal screenshot slots that advance every 4 seconds; both slots currently reference the same approved capture until a second real screenshot is available. The performance comparison remains an interactive HTML slide. Manual arrows, keyboard navigation, and touch gestures work in both directions.
 
+The right control rail uses antique-gold chapter dividers and a countdown scale with a cyan pointer. The remaining time (to tenths of a second), pointer, and slide transition share the same 8-second clock. Hovering the screenshot, focusing carousel controls, hiding the page, or pressing pause freezes both carousel levels; pressing resume explicitly allows playback while that button retains focus. Reduced-motion preferences disable autoplay. The rail has no visible “自动播放 / Autoplay” caption. Its width, the screenshot geometry, and the single-screen desktop layout remain unchanged.
+
 ## Local development / 本地开发
 
 Run a static HTTP server from the repository root:

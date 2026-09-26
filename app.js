@@ -64,6 +64,7 @@
         imagePosition: (index, total) => `第 ${index} 张截图，共 ${total} 张`,
         pause: "暂停自动播放",
         play: "继续自动播放",
+        motionDisabled: "已按系统减少动态效果设置关闭自动播放",
         slideNavigation: "选择能力页面",
         evidenceLabel: "性能证据项目",
         evidencePending: "性能证据将在真实测量后公开",
@@ -180,6 +181,7 @@
         imagePosition: (index, total) => `Screenshot ${index} of ${total}`,
         pause: "Pause autoplay",
         play: "Resume autoplay",
+        motionDisabled: "Autoplay is disabled by your reduced-motion preference",
         slideNavigation: "Choose a capability slide",
         evidenceLabel: "Performance evidence categories",
         evidencePending: "Performance evidence will be published after real measurement",
@@ -298,6 +300,8 @@
       explicitPaused: false,
       pointerInside: false,
       focusInside: false,
+      playbackFocusOverride: false,
+      pauseBeforePointer: null,
       documentHidden: document.hidden,
       reducedMotion: false,
       transitioning: false,
@@ -344,8 +348,12 @@
       },
       nextSlide() { return this.slides[(this.currentIndex + 1) % this.slides.length]; },
       progressRatio() { return Math.min(this.elapsed / SLIDE_DURATION, 1).toFixed(4); },
+      remainingRatio() { return Math.max(0, 1 - this.elapsed / SLIDE_DURATION).toFixed(4); },
+      remainingSeconds() {
+        return (Math.ceil(Math.max(0, SLIDE_DURATION - this.elapsed) / 100) / 10).toFixed(1).padStart(4, "0");
+      },
       autoplayPaused() {
-        return this.explicitPaused || this.pointerInside || this.focusInside
+        return this.explicitPaused || this.pointerInside || (this.focusInside && !this.playbackFocusOverride)
           || this.performanceDialogOpen || this.documentHidden || this.reducedMotion;
       },
       liveStatus() { return this.ui.status(this.currentIndex + 1, this.activeSlide.headline); },
@@ -396,7 +404,7 @@
       pad(value) { return String(value).padStart(2, "0"); },
       tick(timestamp) {
         if (!this.lastFrame) this.lastFrame = timestamp;
-        const delta = Math.min(timestamp - this.lastFrame, 100);
+        const delta = Math.max(0, timestamp - this.lastFrame);
         this.lastFrame = timestamp;
         if (!this.autoplayPaused) {
           this.elapsed += delta;
@@ -426,6 +434,18 @@
       goTo(index) { this.changeSlide(index); },
       previous() { this.changeSlide(this.currentIndex - 1); },
       next() { this.changeSlide(this.currentIndex + 1); },
+      handleTabKey(event, index) {
+        const destinations = {
+          ArrowUp: index - 1, ArrowLeft: index - 1,
+          ArrowDown: index + 1, ArrowRight: index + 1,
+          Home: 0, End: this.slides.length - 1,
+        };
+        if (!(event.key in destinations)) return;
+        event.preventDefault();
+        event.stopPropagation();
+        this.goTo(destinations[event.key]);
+        this.$nextTick(() => document.getElementById(`tab-${this.currentIndex}`)?.focus());
+      },
       changeImage(index, manual = true) {
         if (this.activeImages.length < 2) return;
         const normalized = (index + this.activeImages.length) % this.activeImages.length;
@@ -442,7 +462,16 @@
       },
       previousImage() { this.changeImage(this.currentImageIndex - 1); },
       nextImage() { this.changeImage(this.currentImageIndex + 1); },
-      togglePause() { this.explicitPaused = !this.explicitPaused; },
+      togglePause(event) {
+        if (this.reducedMotion) return;
+        // Pointer focus arrives before click; retain the state before that focus change.
+        const wasPaused = event?.detail ? this.pauseBeforePointer ?? this.autoplayPaused : this.autoplayPaused;
+        this.pauseBeforePointer = null;
+        this.explicitPaused = !wasPaused;
+        this.playbackFocusOverride = wasPaused;
+        if (wasPaused) this.pointerInside = false;
+        this.lastFrame = performance.now();
+      },
       toggleMetric(index) {
         this.pinnedMetricIndex = this.pinnedMetricIndex === index ? null : index;
       },
@@ -466,10 +495,15 @@
         const description = document.querySelector('meta[name="description"]');
         if (description) description.setAttribute("content", this.dictionary.meta.description);
       },
+      handleFocusIn(event) {
+        this.focusInside = true;
+        if (event.target !== this.$refs.pauseButton) this.playbackFocusOverride = false;
+      },
       handleFocusOut() {
         window.requestAnimationFrame(() => {
           const carousel = document.getElementById("carousel-area");
           this.focusInside = Boolean(carousel && carousel.contains(document.activeElement));
+          if (!this.focusInside) this.playbackFocusOverride = false;
         });
       },
       focusMedia() {

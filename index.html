@@ -88,9 +88,7 @@
           :style="{ '--slide-offset': slideDirection > 0 ? '1.25rem' : '-1.25rem' }"
           :aria-roledescription="ui.carousel"
           :aria-label="ui.carouselLabel"
-          @mouseenter="pointerInside = true"
-          @mouseleave="pointerInside = false"
-          @focusin="focusInside = true"
+          @focusin="handleFocusIn"
           @focusout="handleFocusOut"
           @keydown.up.prevent="previous"
           @keydown.down.prevent="next"
@@ -198,11 +196,15 @@
                 <span class="score-gold">♪</span><span>♩</span><span>♫</span>
               </div>
 
-              <div class="counter" aria-hidden="true">
+              <div class="counter mobile-counter" aria-hidden="true">
                 <strong>{{ pad(currentIndex + 1) }}</strong><span>/</span><span>{{ pad(slides.length) }}</span>
               </div>
 
-              <div class="screenshot-window">
+              <div
+                class="screenshot-window"
+                @pointerenter="pointerInside = $event.pointerType !== 'touch'"
+                @pointerleave="pointerInside = false"
+              >
                 <div v-if="currentIndex !== 1" class="window-bar" aria-hidden="true">
                   <span class="traffic red"></span><span class="traffic amber"></span><span class="traffic green"></span>
                   <span class="window-title">MOZART IDE</span>
@@ -311,6 +313,10 @@
               </div>
 
               <div class="tabs-wrap">
+                <div class="counter spine-counter" aria-hidden="true">
+                  <strong>{{ pad(currentIndex + 1) }}</strong><span>/</span><span>{{ pad(slides.length) }}</span>
+                  <span class="tempo-clef">𝄞</span>
+                </div>
                 <div class="tabs" role="tablist" :aria-label="ui.slideNavigation">
                   <button
                     v-for="(slide, index) in slides"
@@ -324,8 +330,7 @@
                     :tabindex="currentIndex === index ? 0 : -1"
                     :class="{ active: currentIndex === index }"
                     @click="goTo(index)"
-                    @keydown.home.prevent="goTo(0)"
-                    @keydown.end.prevent="goTo(slides.length - 1)"
+                    @keydown="handleTabKey($event, index)"
                   >
                     <span class="tab-number">{{ pad(index + 1) }}</span>
                     <span class="tab-label">{{ slide.tab }}</span>
@@ -343,18 +348,31 @@
                   </button>
                 </div>
 
-                <div class="playback-control">
+                <div class="playback-control" :class="{ 'is-paused': autoplayPaused }">
+                  <div class="countdown-meter" aria-hidden="true" :style="{ '--remaining': remainingRatio }">
+                    <div class="countdown-scale">
+                      <span v-for="tick in 33" :key="tick" class="countdown-tick"></span>
+                      <span class="countdown-needle"></span>
+                    </div>
+                    <div class="countdown-labels">
+                      <span v-for="second in 9" :key="second">{{ second - 1 }}</span>
+                    </div>
+                    <span class="duration">{{ remainingSeconds }}<small>s</small></span>
+                  </div>
                   <button
+                    ref="pauseButton"
                     class="pause-button"
                     type="button"
-                    :aria-label="explicitPaused ? ui.play : ui.pause"
+                    :aria-label="reducedMotion ? ui.motionDisabled : autoplayPaused ? ui.play : ui.pause"
                     :aria-pressed="explicitPaused.toString()"
+                    :disabled="reducedMotion"
+                    @pointerdown="pauseBeforePointer = autoplayPaused"
+                    @pointercancel="pauseBeforePointer = null"
                     @click="togglePause"
                   >
-                    <svg v-if="explicitPaused" aria-hidden="true" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7V5Z"/></svg>
+                    <svg v-if="autoplayPaused" aria-hidden="true" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7V5Z"/></svg>
                     <svg v-else aria-hidden="true" viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></svg>
                   </button>
-                  <span class="duration" aria-hidden="true">8s</span>
                 </div>
 
                 <div class="spine-arrows">
