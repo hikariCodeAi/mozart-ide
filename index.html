@@ -20,9 +20,9 @@
     <link rel="preload" as="image" href="assets/screenshots/performance-evidence-1710x1030.png">
     <title>Mozart IDE — 代码由 Agent 批量生产，审查由特种兵一枪毙命</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20260927-desktop-rail">
     <script defer src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.min.js"></script>
-    <script defer src="app.js"></script>
+    <script defer src="app.js?v=20260927-desktop-rail"></script>
   </head>
   <body>
     <div id="app" v-cloak class="site-shell relative isolate min-h-svh overflow-hidden">
@@ -90,6 +90,7 @@
           :aria-label="ui.carouselLabel"
           @focusin="handleFocusIn"
           @focusout="handleFocusOut"
+          @pointerdown.capture="handlePointerDown"
           @keydown.up.prevent="previous"
           @keydown.down.prevent="next"
         >
@@ -200,11 +201,7 @@
                 <strong>{{ pad(currentIndex + 1) }}</strong><span>/</span><span>{{ pad(slides.length) }}</span>
               </div>
 
-              <div
-                class="screenshot-window"
-                @pointerenter="pointerInside = $event.pointerType !== 'touch'"
-                @pointerleave="pointerInside = false"
-              >
+              <div class="screenshot-window">
                 <div v-if="currentIndex !== 1" class="window-bar" aria-hidden="true">
                   <span class="traffic red"></span><span class="traffic amber"></span><span class="traffic green"></span>
                   <span class="window-title">MOZART IDE</span>
@@ -317,7 +314,7 @@
                   <strong>{{ pad(currentIndex + 1) }}</strong><span>/</span><span>{{ pad(slides.length) }}</span>
                   <span class="tempo-clef">𝄞</span>
                 </div>
-                <div class="tabs" role="tablist" :aria-label="ui.slideNavigation">
+                <div ref="tabList" class="tabs" role="tablist" :aria-label="ui.slideNavigation">
                   <button
                     v-for="(slide, index) in slides"
                     :id="'tab-' + index"
@@ -326,6 +323,8 @@
                     type="button"
                     role="tab"
                     :aria-selected="currentIndex === index"
+                    :aria-label="pad(index + 1) + ' ' + slide.tab"
+                    :title="slide.tab"
                     :aria-controls="'slide-panel-' + index"
                     :tabindex="currentIndex === index ? 0 : -1"
                     :class="{ active: currentIndex === index }"
@@ -333,7 +332,7 @@
                     @keydown="handleTabKey($event, index)"
                   >
                     <span class="tab-number">{{ pad(index + 1) }}</span>
-                    <span class="tab-label">{{ slide.tab }}</span>
+                    <span class="tab-label">{{ slide.shortTab || slide.tab }}</span>
                     <span
                       class="progress-track"
                       :class="{ active: currentIndex === index, completed: index < currentIndex }"
@@ -363,10 +362,8 @@
                     ref="pauseButton"
                     class="pause-button"
                     type="button"
-                    :aria-label="reducedMotion ? ui.motionDisabled : autoplayPaused ? ui.play : ui.pause"
+                    :aria-label="autoplayPaused ? ui.play : ui.pause"
                     :aria-pressed="explicitPaused.toString()"
-                    :disabled="reducedMotion"
-                    @pointerdown="pauseBeforePointer = autoplayPaused"
                     @pointercancel="pauseBeforePointer = null"
                     @click="togglePause"
                   >

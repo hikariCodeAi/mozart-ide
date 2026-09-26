@@ -64,7 +64,6 @@
         imagePosition: (index, total) => `第 ${index} 张截图，共 ${total} 张`,
         pause: "暂停自动播放",
         play: "继续自动播放",
-        motionDisabled: "已按系统减少动态效果设置关闭自动播放",
         slideNavigation: "选择能力页面",
         evidenceLabel: "性能证据项目",
         evidencePending: "性能证据将在真实测量后公开",
@@ -181,7 +180,6 @@
         imagePosition: (index, total) => `Screenshot ${index} of ${total}`,
         pause: "Pause autoplay",
         play: "Resume autoplay",
-        motionDisabled: "Autoplay is disabled by your reduced-motion preference",
         slideNavigation: "Choose a capability slide",
         evidenceLabel: "Performance evidence categories",
         evidencePending: "Performance evidence will be published after real measurement",
@@ -226,6 +224,7 @@
           chips: ["GPU Direct Render", "C++ Low-level Dispatch", "Zero GC Pauses", "Sub-millisecond"],
           cta: "View performance evidence",
           tab: "Performance",
+          shortTab: "Speed",
           images: [],
           alt: "Six user-supplied measurements comparing Mozart IDE, Zed, VS Code, and WebStorm",
         },
@@ -237,6 +236,7 @@
           chips: ["Official CLI Dispatch", "Isolated Environment", "Zero-Loss Harness", "Full Passthrough"],
           cta: "Explore the Agent workflow",
           tab: "Official Host",
+          shortTab: "Agents",
           images: [
             "assets/screenshots/official-agent-cli-1710x1030.png",
             "assets/screenshots/official-agent-cli-1710x1030.png",
@@ -251,6 +251,7 @@
           chips: ["Sub-ms Dual Diff", "JetBrains Keymap", "AST Semantic Align", "Review Pipeline"],
           cta: "Explore Review",
           tab: "Code Review",
+          shortTab: "Review",
           images: [
             "assets/screenshots/review-diff-1710x1030.png",
             "assets/screenshots/review-diff-1710x1030.png",
@@ -265,6 +266,7 @@
           chips: ["Direct & Fast", "Subtle GPU Motion", "Focused Subtraction", "High Efficiency"],
           cta: "Inspect Craftsmanship",
           tab: "Experience",
+          shortTab: "Usability",
           images: [
             "assets/screenshots/git-command-center-1710x1030.png",
             "assets/screenshots/git-command-center-1710x1030.png",
@@ -298,12 +300,12 @@
       lastFrame: 0,
       animationFrame: 0,
       explicitPaused: false,
-      pointerInside: false,
       focusInside: false,
       playbackFocusOverride: false,
       pauseBeforePointer: null,
       documentHidden: document.hidden,
       reducedMotion: false,
+      motionPlaybackRequested: false,
       transitioning: false,
       slideDirection: 1,
       transitionTimer: 0,
@@ -353,8 +355,9 @@
         return (Math.ceil(Math.max(0, SLIDE_DURATION - this.elapsed) / 100) / 10).toFixed(1).padStart(4, "0");
       },
       autoplayPaused() {
-        return this.explicitPaused || this.pointerInside || (this.focusInside && !this.playbackFocusOverride)
-          || this.performanceDialogOpen || this.documentHidden || this.reducedMotion;
+        return this.explicitPaused || (this.focusInside && !this.playbackFocusOverride)
+          || this.performanceDialogOpen || this.documentHidden
+          || (this.reducedMotion && !this.motionPlaybackRequested);
       },
       liveStatus() { return this.ui.status(this.currentIndex + 1, this.activeSlide.headline); },
     },
@@ -362,6 +365,7 @@
       locale() {
         this.applyMetadata();
         this.preloadImages();
+        this.$nextTick(this.revealActiveTab);
       },
       currentIndex() {
         this.currentImageIndex = 0;
@@ -372,6 +376,7 @@
         this.focusedMetricIndex = null;
         this.pinnedMetricIndex = null;
         this.preloadImages();
+        this.$nextTick(this.revealActiveTab);
       },
     },
     created() {
@@ -379,7 +384,10 @@
       this.reducedMotion = this.motionQuery.matches;
       this.onMotionChange = (event) => {
         this.reducedMotion = event.matches;
-        if (event.matches) this.elapsed = 0;
+        if (event.matches) {
+          this.elapsed = 0;
+          this.motionPlaybackRequested = false;
+        }
       };
       if (this.motionQuery.addEventListener) this.motionQuery.addEventListener("change", this.onMotionChange);
       else this.motionQuery.addListener(this.onMotionChange);
@@ -389,6 +397,8 @@
       this.applyMetadata();
       this.preloadImages();
       this.loadReleaseState();
+      this.revealActiveTab();
+      window.addEventListener("resize", this.revealActiveTab);
       this.animationFrame = window.requestAnimationFrame(this.tick);
     },
     beforeDestroy() {
@@ -397,6 +407,7 @@
       window.clearTimeout(this.transitionTimer);
       window.clearTimeout(this.imageTransitionTimer);
       document.removeEventListener("visibilitychange", this.onVisibilityChange);
+      window.removeEventListener("resize", this.revealActiveTab);
       if (this.motionQuery.removeEventListener) this.motionQuery.removeEventListener("change", this.onMotionChange);
       else this.motionQuery.removeListener(this.onMotionChange);
     },
@@ -434,6 +445,15 @@
       goTo(index) { this.changeSlide(index); },
       previous() { this.changeSlide(this.currentIndex - 1); },
       next() { this.changeSlide(this.currentIndex + 1); },
+      revealActiveTab() {
+        const list = this.$refs.tabList;
+        if (!list || !window.matchMedia("(min-width: 1100px)").matches) return;
+        const start = Math.min(Math.max(this.currentIndex - 2, 0), this.slides.length - 4);
+        list.scrollTo({
+          top: start * list.clientHeight / 4,
+          behavior: this.reducedMotion ? "instant" : "smooth",
+        });
+      },
       handleTabKey(event, index) {
         const destinations = {
           ArrowUp: index - 1, ArrowLeft: index - 1,
@@ -443,8 +463,10 @@
         if (!(event.key in destinations)) return;
         event.preventDefault();
         event.stopPropagation();
+        this.focusInside = true;
+        this.playbackFocusOverride = false;
         this.goTo(destinations[event.key]);
-        this.$nextTick(() => document.getElementById(`tab-${this.currentIndex}`)?.focus());
+        this.$nextTick(() => document.getElementById(`tab-${this.currentIndex}`)?.focus({ preventScroll: true }));
       },
       changeImage(index, manual = true) {
         if (this.activeImages.length < 2) return;
@@ -463,13 +485,12 @@
       previousImage() { this.changeImage(this.currentImageIndex - 1); },
       nextImage() { this.changeImage(this.currentImageIndex + 1); },
       togglePause(event) {
-        if (this.reducedMotion) return;
         // Pointer focus arrives before click; retain the state before that focus change.
         const wasPaused = event?.detail ? this.pauseBeforePointer ?? this.autoplayPaused : this.autoplayPaused;
         this.pauseBeforePointer = null;
         this.explicitPaused = !wasPaused;
         this.playbackFocusOverride = wasPaused;
-        if (wasPaused) this.pointerInside = false;
+        if (wasPaused) this.motionPlaybackRequested = true;
         this.lastFrame = performance.now();
       },
       toggleMetric(index) {
@@ -495,14 +516,20 @@
         const description = document.querySelector('meta[name="description"]');
         if (description) description.setAttribute("content", this.dictionary.meta.description);
       },
+      handlePointerDown(event) {
+        this.pauseBeforePointer = event.target.closest(".pause-button") ? this.autoplayPaused : null;
+        this.focusInside = false;
+        this.playbackFocusOverride = false;
+      },
       handleFocusIn(event) {
-        this.focusInside = true;
+        this.focusInside = event.target.matches(":focus-visible");
         if (event.target !== this.$refs.pauseButton) this.playbackFocusOverride = false;
       },
       handleFocusOut() {
         window.requestAnimationFrame(() => {
           const carousel = document.getElementById("carousel-area");
-          this.focusInside = Boolean(carousel && carousel.contains(document.activeElement));
+          this.focusInside = Boolean(carousel && carousel.contains(document.activeElement)
+            && document.activeElement.matches(":focus-visible"));
           if (!this.focusInside) this.playbackFocusOverride = false;
         });
       },

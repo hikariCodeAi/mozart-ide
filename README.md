@@ -20,11 +20,13 @@ The website is a static GitHub Pages project with no build step or backend:
 
 Vue 2.7.16 and Tailwind CSS Browser v4 are loaded from pinned jsDelivr URLs. There is no `package.json`, bundler, application server, database, PM2 process, SSH deployment, or server password in this repository.
 
-The performance carousel slot uses an interactive HTML comparison with six user-supplied measurements. Its rationale appears on hover, keyboard focus, or tap; the detail view makes values readable on phones. Global-search P95 is omitted pending actual measurement.
+The website targets desktop users learning about Mozart IDE and downloading the desktop application. H5, phone, tablet, and touch-specific adaptation are outside the scope of implementation and validation unless explicitly requested.
 
-The five feature slides advance vertically every 8 seconds. Each image slide has two horizontal screenshot slots that advance every 4 seconds; both slots currently reference the same approved capture until a second real screenshot is available. The performance comparison remains an interactive HTML slide. Manual arrows, keyboard navigation, and touch gestures work in both directions.
+The performance carousel slot uses an interactive HTML comparison with six user-supplied measurements. Its rationale appears on hover, keyboard focus, or click; the detail view enlarges the comparison. Global-search P95 is omitted pending actual measurement.
 
-The right control rail uses antique-gold chapter dividers and a countdown scale with a cyan pointer. The remaining time (to tenths of a second), pointer, and slide transition share the same 8-second clock. Hovering the screenshot, focusing carousel controls, hiding the page, or pressing pause freezes both carousel levels; pressing resume explicitly allows playback while that button retains focus. Reduced-motion preferences disable autoplay. The rail has no visible “自动播放 / Autoplay” caption. Its width, the screenshot geometry, and the single-screen desktop layout remain unchanged.
+The five feature slides advance vertically every 8 seconds. Each image slide has two horizontal screenshot slots that advance every 4 seconds; both slots currently reference the same approved capture until a second real screenshot is available. The performance comparison remains an interactive HTML slide. Manual arrows and keyboard navigation work in both directions.
+
+The right control rail uses larger labels and a scrolling list with four visible slots for five chapters. The selected chapter scrolls into view vertically within the desktop rail. Antique-gold dividers and a countdown scale accompany a cyan pointer; remaining tenths, pointer, and slide transition share the same 8-second clock. Pointer hover and clicks do not stop autoplay. Keyboard focus, a hidden page, an open detail dialog, or explicit pause freezes both carousel levels; resume works while the button retains focus. Reduced-motion preferences disable autoplay by default but allow explicit playback with transitions still suppressed. The rail has no visible “自动播放 / Autoplay” caption. Its width, screenshot geometry, and single-screen desktop layout remain unchanged. CSS and JavaScript URLs carry a version suffix so published control changes do not reuse stale cached files.
 
 ## Local development / 本地开发
 
@@ -43,9 +45,8 @@ Before changing the homepage, read `AGENTS.md` and `assets/ASSET_MANIFEST.md`. U
 Check these viewports after visible changes:
 
 - `1920×1080`, `1440×900`, `1280×720`
-- `768×1024`, `390×844`
 
-Desktop layouts must fit within `100svh`; mobile layouts may scroll vertically but must not overflow horizontally. Also verify both languages, all five feature slides and their image slots, keyboard and touch navigation, pause/autoplay, persisted language, and reduced-motion behavior.
+Desktop layouts must fit within `100svh`. Verify both languages, all five feature slides and their image slots, mouse and keyboard navigation, pause/autoplay, persisted language, and reduced-motion behavior. Do not run H5, phone, or tablet adaptation checks.
 
 Basic source checks:
 
