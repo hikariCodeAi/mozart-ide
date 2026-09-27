@@ -22,7 +22,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="styles.css?v=20260927-desktop-rail">
     <script defer src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.min.js"></script>
-    <script defer src="app.js?v=20260927-desktop-rail"></script>
+    <script defer src="app.js?v=20260928-downloads"></script>
   </head>
   <body>
     <div id="app" v-cloak class="site-shell relative isolate min-h-svh overflow-hidden">
@@ -71,7 +71,7 @@
             rel="noopener"
           >
             <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m0 0 5-5m-5 5-5-5M5 20h14"/></svg>
-            {{ ui.download }}
+            {{ downloadLabel }}
           </a>
           <button v-else class="header-cta is-disabled" type="button" disabled>
             <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m0 0 5-5m-5 5-5-5M5 20h14"/></svg>
@@ -125,7 +125,7 @@
                 rel="noopener"
               >
                 <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m0 0 5-5m-5 5-5-5M5 20h14"/></svg>
-                {{ ui.download }}
+                {{ downloadLabel }}
               </a>
               <button v-else class="primary-action is-disabled" type="button" disabled>
                 <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m0 0 5-5m-5 5-5-5M5 20h14"/></svg>

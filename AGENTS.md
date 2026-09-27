@@ -30,6 +30,7 @@
 ## 发布真实性
 
 - `update/latest.json` 是下载状态的唯一事实来源。
+- 各平台可独立发布。macOS 直接提供关闭内置自动更新的 arm64 DMG，不以 Apple 开发者账号、Developer ID、公证、更新私钥或 Windows 安装包作为发布前置条件；保留 IDE 功能。
 - 只有经过验证的 GitHub Release 和真实安装包 URL 同时存在时，才可设置 `published: true`。
 - 未发布、清单不可用或请求失败时必须保持“即将发布 / Coming soon”，不得添加占位下载链接。
 - 保留 `update/`、`release-notes/` 和 `.nojekyll`；不要把本地设计探索稿、测试报告或凭据加入 Pages 发布内容。

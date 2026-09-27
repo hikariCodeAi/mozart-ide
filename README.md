@@ -14,7 +14,7 @@ The website is a static GitHub Pages project with no build step or backend:
 - `DESIGN_GUIDE.md` — shared typography, color, spacing, control, icon, and motion rules.
 - `assets/` — approved brand artwork, layered hero artwork, and real product screenshots.
 - `update/latest.json` — the single source of truth for download availability.
-- `update/appcast-macos-arm64.xml` and `update/appcast-windows-x64.xml` — signed, derived platform feeds generated only from verified release data.
+- `update/appcast-macos-arm64.xml` and `update/appcast-windows-x64.xml` — reserved for optional signed automatic-update feeds. macOS direct downloads do not publish an appcast.
 - `release-notes/` — notes for verified public releases.
 - `.github/workflows/pages.yml` — GitHub Pages deployment workflow.
 
@@ -58,7 +58,25 @@ git diff --check
 
 ## Release truth / 发布真实性
 
-No installable release has been published yet. While `update/latest.json` contains `"published": false`, every download CTA must remain disabled and display “即将发布 / Coming soon”. A published manifest uses a stable `X.Y.Z` version and exactly one signed `macos/arm64` DMG plus one signed `windows/x64` EXE, including size, SHA-256, and Ed25519 signature. Both appcasts are generated from that same verified data and advance in the same commit only after the draft Release assets are complete and the Release is public. Never add placeholder assets, fabricated checksums, signatures, or performance numbers.
+Each platform can be published independently. A downloadable manifest uses a stable `X.Y.Z` version and at least one real GitHub Release asset, including platform, architecture, byte size, and SHA-256. Only set `published: true` after the public Release and its actual installer URL have been verified. Never publish placeholder links, fabricated checksums, signatures, or performance numbers.
+
+macOS is distributed as a direct-download `macos/arm64` DMG, without requiring an Apple developer account, Developer ID signing, notarization, or a Windows package. This package uses an ad-hoc integrity signature and keeps `MOZART_ENABLE_SELF_UPDATE=OFF`; users update by downloading and installing the next DMG. It does not contain an automatic-update feed or fabricated Ed25519 signature. This distribution choice preserves the IDE's existing features.
+
+The homepage selects a verified asset for the visitor's desktop platform. If that platform has no installer yet, the action opens GitHub Releases as “查看安装包 / View downloads” rather than downloading a different platform's package. An unavailable or invalid manifest still displays “即将发布 / Coming soon”.
+
+A manual-download asset records `updateEnabled: false` and `edSignature: null`. Signed automatic-update assets, when configured, must include a real Ed25519 signature and a matching signed appcast; these are not prerequisites for macOS direct downloads.
+
+## Windows publishing / Windows 发布准备
+
+For the current website/GitHub distribution, provide:
+
+- A Windows 10/11 x64 build machine and its source/build paths, or an existing native x64 installer. The build requires MSVC C++ tools, CMake/Ninja, Qt 6 (Core, Gui, Widgets, Network, Svg, Core5Compat and Test), and Inno Setup 7.
+- The release version and supported Windows versions.
+- Whether Authenticode signing is available. If available, provide the certificate thumbprint or signing-provider configuration location; keep passwords and private keys out of chat and Git.
+
+Uploading a Windows installer to GitHub Releases does not require a Microsoft Store developer account. Unsigned downloads can show Windows security prompts; code signing should be configured for normal public distribution. See [Microsoft's signing options](https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/code-signing-options).
+
+If Microsoft Store distribution is also requested, start at [Microsoft Store developer registration](https://storedeveloper.microsoft.com/). Complete sign-in and identity verification yourself, then provide the publisher display name, reserved app identity, chosen MSIX or EXE submission route, supported languages, price, support contact, and public privacy-policy URL. The registration portal collects identity documents; do not send them, account passwords, or verification codes to this repository or chat. See [Microsoft's registration steps](https://learn.microsoft.com/en-us/windows/apps/publish/partner-center/open-a-developer-account).
 
 ## Deployment / 部署
 

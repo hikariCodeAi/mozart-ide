@@ -52,6 +52,9 @@
         navItems: ["前言", "性能", "Agent", "审查", "好用"],
         languageLabel: "选择语言",
         download: "下载 Mozart",
+        downloadMac: "下载 macOS",
+        downloadWindows: "下载 Windows",
+        browseDownloads: "查看安装包",
         comingSoon: "即将发布",
         releases: "前往 GitHub Releases",
         carousel: "轮播",
@@ -168,6 +171,9 @@
         navItems: ["Prologue", "Performance", "Agents", "Review", "Experience"],
         languageLabel: "Choose language",
         download: "Download Mozart",
+        downloadMac: "Download macOS",
+        downloadWindows: "Download Windows",
+        browseDownloads: "View downloads",
         comingSoon: "Coming soon",
         releases: "Open GitHub Releases",
         carousel: "carousel",
@@ -320,9 +326,15 @@
       release: {
         available: false,
         url: RELEASES_URL,
+        platform: null,
       },
     },
     computed: {
+      downloadLabel() {
+        if (this.release.platform === "macos") return this.ui.downloadMac;
+        if (this.release.platform === "windows") return this.ui.downloadWindows;
+        return this.ui.browseDownloads;
+      },
       dictionary() { return TRANSLATIONS[this.locale]; },
       ui() { return this.dictionary.ui; },
       slides() { return this.dictionary.slides; },
@@ -585,13 +597,21 @@
           if (!response.ok) return;
           const manifest = await response.json();
           const assets = Array.isArray(manifest.assets) ? manifest.assets : [];
-          const firstAsset = assets.find((asset) => asset && (asset.browser_download_url || asset.url));
-          if (manifest.published === true && firstAsset) {
-            this.release = {
-              available: true,
-              url: firstAsset.browser_download_url || firstAsset.url,
-            };
-          }
+          const verifiedAssets = assets.filter((asset) => {
+            if (!asset || !["macos", "windows"].includes(asset.platform)) return false;
+            const url = asset.browser_download_url || asset.url;
+            const expectedUrl = `https://github.com/hikariCodeAi/mozart-ide/releases/download/v${manifest.version}/${asset.name}`;
+            return url === expectedUrl && asset.size > 0 && /^[a-f0-9]{64}$/i.test(asset.sha256);
+          });
+          if (manifest.published !== true || !/^\d+\.\d+\.\d+$/.test(manifest.version) || !verifiedAssets.length) return;
+          const platform = /Windows/i.test(navigator.userAgent) ? "windows"
+            : /Macintosh|Mac OS X/i.test(navigator.userAgent) ? "macos" : null;
+          const asset = verifiedAssets.find((item) => item.platform === platform);
+          this.release = {
+            available: true,
+            url: asset ? (asset.browser_download_url || asset.url) : RELEASES_URL,
+            platform: asset ? asset.platform : null,
+          };
         } catch (_) {
           // Fail closed: no verified manifest means no download CTA.
         }
