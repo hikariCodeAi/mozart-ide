@@ -4,6 +4,25 @@ This repository hosts the [Mozart IDE homepage](https://hikaricodeai.github.io/m
 
 本仓库用于维护 [Mozart IDE 官网](https://hikaricodeai.github.io/mozart-ide/)、公开版本说明和更新清单；IDE 产品源码仍保存在私有开发仓库中。
 
+## Repository and cloning / 仓库地址与下载
+
+Public repository / 公开仓库：[hikariCodeAi/mozart-ide](https://github.com/hikariCodeAi/mozart-ide)
+
+Clone the publishing project on another computer / 在另一台电脑上下载发布项目：
+
+```bash
+git clone https://github.com/hikariCodeAi/mozart-ide.git
+cd mozart-ide
+```
+
+The default development and publishing branch is `main`. This is an independent Git repository, kept at `Publish/mozart-ide/` inside the product workspace on the current computer. It can be cloned into any directory on another computer; the parent product repository is not required. See [Local development](#local-development--本地开发) below to preview the website.
+
+默认开发与发布分支为 `main`。这是一个独立 Git 仓库，在当前电脑的产品工作区中位于 `Publish/mozart-ide/`；另一台电脑可以克隆到任意目录，无需先下载父级产品仓库。本地预览步骤见下方[本地开发](#local-development--本地开发)。
+
+Cloning downloads the website files, release notes, and update metadata. To install Mozart IDE itself, download an installer from [GitHub Releases](https://github.com/hikariCodeAi/mozart-ide/releases).
+
+克隆得到官网文件、版本说明和更新清单。若要安装 Mozart IDE 应用，请从 [GitHub Releases](https://github.com/hikariCodeAi/mozart-ide/releases) 下载安装包。
+
 ## Architecture / 项目架构
 
 The website is a static GitHub Pages project with no build step or backend:
