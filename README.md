@@ -8,16 +8,17 @@ This repository hosts the [Mozart IDE homepage](https://hikaricodeai.github.io/m
 
 Public repository / 公开仓库：[hikariCodeAi/mozart-ide](https://github.com/hikariCodeAi/mozart-ide)
 
-Clone the publishing project on another computer / 在另一台电脑上下载发布项目：
+To keep the same directory layout on another computer, run these commands from the product repository root (the directory containing `readme.txt` and `src/`) / 要在另一台电脑上保持相同目录结构，请先进入产品主仓库根目录（包含 `readme.txt` 和 `src/` 的目录），再执行：
 
 ```bash
-git clone https://github.com/hikariCodeAi/mozart-ide.git
-cd mozart-ide
+mkdir -p Publish
+git clone https://github.com/hikariCodeAi/mozart-ide.git Publish/mozart-ide
+cd Publish/mozart-ide
 ```
 
-The default development and publishing branch is `main`. This is an independent Git repository, kept at `Publish/mozart-ide/` inside the product workspace on the current computer. It can be cloned into any directory on another computer; the parent product repository is not required. See [Local development](#local-development--本地开发) below to preview the website.
+The resulting path is `<product repository root>/Publish/mozart-ide/`, matching this computer. The publishing project is an independent Git repository on its own `main` branch. The parent product repository ignores `Publish/`, so cloning the parent alone does not download this project. See [Local development](#local-development--本地开发) below to preview the website.
 
-默认开发与发布分支为 `main`。这是一个独立 Git 仓库，在当前电脑的产品工作区中位于 `Publish/mozart-ide/`；另一台电脑可以克隆到任意目录，无需先下载父级产品仓库。本地预览步骤见下方[本地开发](#local-development--本地开发)。
+克隆后的路径是`<产品主仓库根目录>/Publish/mozart-ide/`，与当前电脑一致。发布项目是独立 Git 仓库，使用自己的 `main` 分支。主仓库忽略 `Publish/`，因此只克隆主仓库不会自动下载此项目。本地预览步骤见下方[本地开发](#local-development--本地开发)。
 
 Cloning downloads the website files, release notes, and update metadata. To install Mozart IDE itself, download an installer from [GitHub Releases](https://github.com/hikariCodeAi/mozart-ide/releases).
 
