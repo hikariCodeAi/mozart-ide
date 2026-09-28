@@ -37,6 +37,10 @@ All final carousel captures should use the same 1710 × 1030 viewport, dark them
 
 The four image-based feature slides currently use the same approved capture twice in their `images` arrays in `app.js`. These are two slideshow positions, not separate files. Replace each second path only after a second real capture is approved; keep the 171:103 canvas ratio.
 
+## Windows Store screenshots
+
+- `screenshots/windows-store/03-git.png` — Original 2250 × 1350 PNG (194,227 bytes), captured on Windows 10 Pro x64 19045 at 150% scale from installed Mozart IDE 0.1.0, MSIX 1.1.0.0, source commit `2b3f612f5c975bc836b0ae252d19e744b07ed1ad`. Candidate: `Mozart-IDE-0.1.0-windows-x64-store-1.1.0.0-2b3f612-20260929.msix` (SHA-256 `6427bc0a5da7e96f25269055117e2894bd5b5e03f3e08db8038b81126b81d24d`). The package was activated through its registered Windows application identity; the existing `--qa-git-context-menu-capture` path grabbed the real Qt window and its real popup menus. Shows a safe local TypeScript sample, project tree, editor, and an actual Git history entry. No invented repository state, composited design, marketing text, resizing, or private account content. This screenshot documents the displayed candidate interface; it is not a certification or performance claim. Captured 2026-09-29 (Asia/Shanghai). The candidate remains in the existing GitHub Release draft.
+
 ## Performance comparison
 
 The performance carousel slot is rendered with HTML/CSS in `index.html` and `styles.css`, using the six user-supplied measurements in `app.js`. Hover, keyboard focus, or tap a metric to see its design rationale; the enlarge control opens a readable detail view on narrow screens. Global-search P95 is omitted until measured values are supplied.
