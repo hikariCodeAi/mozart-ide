@@ -9,13 +9,29 @@
 - [Microsoft Partner Center 中已保留的 Mozart IDE 产品](https://partner.microsoft.com/zh-CN/dashboard/products/9PKDKVFSLW15/overview)已有第 1 次 **MSIX** 提交草稿；目前没有 Windows 包或 Windows 截图上传。该草稿上传栏接受 `.msix`、`.msixbundle`、`.msixupload` 等 MSIX/AppX 格式，不能把 `.exe` 或 macOS `.dmg` 当作此栏的包上传。
 - [GitHub v0.1.0 Release](https://github.com/hikariCodeAi/mozart-ide/releases/tag/untagged-6dafa437f7bc8ebbe510)目前仍是草稿，已有一个尚未通过完整发布门禁的 macOS 候选包。不要公开该 Release、替换或删除其现有资产，也不要提前把 `update/latest.json` 改成 `published: true`。
 
+## 已保留的 Microsoft Store 身份信息
+
+以下值来自上述 Mozart IDE 产品在 Partner Center 的“产品标识”页，供另一台电脑直接配置 **同一个 MSIX 产品**。`Name`、`Publisher` 和显示名称不是同一字段；按字段逐字使用，保留大小写、下划线、点号与 `CN=`。如果 Partner Center 当前显示的值与这里不同，先记录差异并以该产品的实时“产品标识”页为准，不要新建产品或自行改名。
+
+| 用途 / 常见称呼 | MSIX 或商店字段 | 确切值 |
+| --- | --- | --- |
+| 包名 / Name | `Identity Name` | `yihengfakedream.MozartIDE` |
+| 发布者证书主体 / Publisher、Publish | `Identity Publisher` | `CN=2DE0F10F-5628-4C1F-AE8D-99D5187AD559` |
+| 发布者显示名 / Publisher Name、Publish Name | `PublisherDisplayName` | `yiheng_fakedream` |
+| 应用及商店显示名 / Display Name | `DisplayName`、应用视觉元素的 `DisplayName` | `Mozart IDE` |
+| 包系列名 / PFN（用于核对生成结果） | `Package Family Name` | `yihengfakedream.MozartIDE_x8hkk0embvdk8` |
+| 商店产品 ID | `Product ID` | `9PKDKVFSLW15` |
+| 当前草稿提交 ID | `Submission ID` | `1152921505701986252` |
+
+`Publisher` 的 `CN=...` 不是 `PublisherDisplayName`；`Package Family Name` 是包身份的核对值，不能填进 `Identity Name`。安装包中的产品名称和开始菜单显示名称使用 `Mozart IDE`。这些是打包所需的发布身份值；密码、登录验证码、签名私钥与证书文件仍不得入库。
+
 ## 1. 构建 Windows 应用
 
 1. 在 Windows 10/11 x64 上同步产品仓库 `dev`，记录准确的源码 commit、`git status`、Windows 版本、MSVC／Windows SDK、CMake、Ninja、Qt 6 版本。检查 `CMakeLists.txt` 的实际版本；当前源码版本为 `0.1.0`。不要用旧 Debug 目录或仅改文件名来冒充发布包。
 2. 安装并使用产品构建所需的 MSVC C++ 工具、CMake/Ninja、Qt 6 模块（Core、Gui、Widgets、Network、Svg、Core5Compat、Test）和 Windows SDK。使用产品已有的 `release` preset 构建原生 x64 的 `mozart_ide.exe` 与 `mozart_current_file_search_worker.exe`，确认两者及 Qt 运行库实际可用。
 3. 商店包使用 `MOZART_ENABLE_SELF_UPDATE=OFF`：让 Microsoft Store 管理商店包更新，不在包内提供未经配置的 WinSparkle 更新流；**保留 IDE 的编辑、搜索、Git、终端、构建运行等既有功能**。先在未打包 Release 构建上做最小功能检查，再在安装后的 MSIX 上重复检查，以发现封装导致的文件访问、外部工具调用或路径差异。
 4. 产品仓库现有 `scripts/package-windows.ps1` 只生成 Inno Setup 7 **EXE**，并且要求更新公钥、WinSparkle；正式模式还要求 Authenticode 证书。它不能直接产出当前商店草稿要上传的 MSIX。为本次商店交付，在产品仓库中新增或调整可复现的 MSIX 打包方式（Visual Studio 包装项目、Windows SDK 工具或其他受维护的方式均可），把必要脚本、清单和资源提交到产品仓库 `dev`；不要只留下一次性的手工点击步骤。
-5. 在 Partner Center 的“产品标识”页读取该产品的 **准确、大小写敏感** 的 Package Name 和 Publisher 值，把它们用于 MSIX manifest；不要猜测、改用其他账号的标识，或把账户资料、证书私钥、密码提交到仓库。包目标仅为 **Windows 10/11 Desktop x64**。MSIX 的四段版本须符合商店规则：第一段非零，第四段为 `0`；在交接报告里写清它与应用版本 `0.1.0` 的对应关系。
+5. 将上表的 **Name、Publisher、PublisherDisplayName、DisplayName** 分别填入 MSIX manifest 对应字段，并在 Partner Center 的“产品标识”页再次核对，不要混填或改用其他产品的标识。包目标仅为 **Windows 10/11 Desktop x64**。MSIX 的四段版本须符合商店规则：第一段非零，第四段为 `0`；在交接报告里写清它与应用版本 `0.1.0` 的对应关系。
 6. 提供应用图标、显示名称、桌面启动入口、所需语言和实际需要的权限。使用真实文件部署 Qt 依赖及搜索 worker；不要把 Git、ripgrep、Codex 凭据或用户数据打进包。MSIX 安装后要能从开始菜单启动、打开安全演示项目、完成基本操作、正常退出和卸载。
 
 MSIX 提交到商店后由 Microsoft 重签，因此**商店提交不要求购买 CA 代码签名证书**。本机侧载测试仍需适合测试机的签名和信任设置。独立的官网 EXE 下载是另一条发布路径：现有 Inno 脚本正式模式需要 Authenticode 证书及构建时的更新公钥，后续签名更新发布还需对应私钥；没有这些条件时只把 EXE 用作本地 QA，不能把 `-QaUnsigned` 的结果标为正式官网／商店下载，也不要修改官网发布清单。[MSIX 包规则](https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/msix/app-package-requirements)；[EXE/MSI 商店规则](https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/msi/app-package-requirements)。
@@ -31,7 +47,7 @@ MSIX 提交到商店后由 Microsoft 重签，因此**商店提交不要求购�
 
 1. 在产品仓库执行相关构建／测试；对 MSIX 候选做全新安装、启动、打开安全项目、编辑保存、搜索、Git、终端或构建运行、关闭与卸载的实机检查，并记录成功、失败和未测项。产品仓库 `test-guide.txt` 的发布门禁仍有效；未通过的门禁要如实标记，不能写 PASS。对 MSIX 运行商店适用的包验证或 Windows App Certification Kit，保存原始结果；商店最终认证仍以 Partner Center 的结果为准。
 2. 包二进制 **不要 `git add` 到公开源码仓库**。若可访问本产品的 GitHub Release 草稿，可将唯一命名的 Windows MSIX 候选上传到现有 `v0.1.0` **草稿**作为跨电脑交接资产，保持草稿状态，不加 `--clobber`，不替换 macOS 资产。若无法上传草稿，提供后续这台电脑可读取的明确传输位置；仅给出 Windows 本地路径不算完成交接。
-3. 在**私有产品仓库**的 `docs/` 下新增 Windows 发布交接结果文档，并按该仓库规则更新目录索引。写明：产品源码 commit、公开仓库 commit、应用版本、MSIX 四段版本、Windows／构建工具版本、产物**草稿资产链接**、文件名、字节数、SHA-256、目标架构、真实截图路径、运行与包验证结果、已知问题、尚需用户提供的支持邮箱／隐私政策 URL 等。仅报告“manifest 标识与 Partner Center 一致”，不要在公开仓库中放测试报告、账号或证书材料。可用 PowerShell `Get-FileHash -Algorithm SHA256` 和 `Get-Item ... | Select-Object Length` 取得校验数据。
+3. 在**私有产品仓库**的 `docs/` 下新增 Windows 发布交接结果文档，并按该仓库规则更新目录索引。写明：产品源码 commit、公开仓库 commit、应用版本、MSIX 四段版本、Windows／构建工具版本、产物**草稿资产链接**、文件名、字节数、SHA-256、目标架构、真实截图路径、运行与包验证结果、已知问题、尚需用户提供的支持邮箱／隐私政策 URL 等。报告中核对 manifest 标识与上表及 Partner Center 一致；不要在公开仓库中放测试报告或上述发布身份以外的账号资料、证书材料。可用 PowerShell `Get-FileHash -Algorithm SHA256` 和 `Get-Item ... | Select-Object Length` 取得校验数据。
 4. 只提交本任务涉及的打包源码和交接结果（产品仓库 `dev`）及真实截图、素材清单（公开仓库 `main`），分别推送。不要提交其他人的未提交文件、构建目录、测试报告原始隐私数据、私钥、证书、令牌或个人路径。推送后给出两个仓库的 commit、草稿资产链接和每张截图的仓库路径。
 5. 接续任务会拉取两个仓库，重新校验 SHA-256、包身份、真实截图与测试证据，再从商店草稿的“程序包”和“Store 一览”完成上传与填写。任何尚未通过审核的资产均保持草稿；官网 `update/latest.json` 只在真实公开 GitHub Release 与可访问的安装包 URL 通过验证后变更。
 
