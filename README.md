@@ -88,6 +88,8 @@ A manual-download asset records `updateEnabled: false` and `edSignature: null`. 
 
 ## Windows publishing / Windows 发布准备
 
+在另一台 Windows 电脑上打包、验证、截取 Microsoft Store 截图并交接产物时，按 [Windows 打包与商店截图交接](docs/WINDOWS_RELEASE_HANDOFF.md) 执行。当前商店草稿采用 MSIX 路线；产品仓库现有 `package-windows.ps1` 生成的 Inno EXE 不能直接上传到该草稿的 MSIX 程序包栏。
+
 For the current website/GitHub distribution, provide:
 
 - A Windows 10/11 x64 build machine and its source/build paths, or an existing native x64 installer. The build requires MSVC C++ tools, CMake/Ninja, Qt 6 (Core, Gui, Widgets, Network, Svg, Core5Compat and Test), and Inno Setup 7.
@@ -96,7 +98,7 @@ For the current website/GitHub distribution, provide:
 
 Uploading a Windows installer to GitHub Releases does not require a Microsoft Store developer account. Unsigned downloads can show Windows security prompts; code signing should be configured for normal public distribution. See [Microsoft's signing options](https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/code-signing-options).
 
-If Microsoft Store distribution is also requested, start at [Microsoft Store developer registration](https://storedeveloper.microsoft.com/). Complete sign-in and identity verification yourself, then provide the publisher display name, reserved app identity, chosen MSIX or EXE submission route, supported languages, price, support contact, and public privacy-policy URL. The registration portal collects identity documents; do not send them, account passwords, or verification codes to this repository or chat. See [Microsoft's registration steps](https://learn.microsoft.com/en-us/windows/apps/publish/partner-center/open-a-developer-account).
+The Microsoft Store now has a reserved Mozart IDE product and an MSIX submission draft. Follow the [Windows handoff](docs/WINDOWS_RELEASE_HANDOFF.md) to build and capture the actual Windows app; the Store listing still needs a price choice, support contact, and public privacy-policy URL. Do not commit account passwords, verification codes, identity documents, or signing keys.
 
 ## Deployment / 部署
 
