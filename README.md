@@ -20,9 +20,9 @@ The resulting path is `<product repository root>/Publish/mozart-ide/`, matching 
 
 克隆后的路径是`<产品主仓库根目录>/Publish/mozart-ide/`，与当前电脑一致。发布项目是独立 Git 仓库，使用自己的 `main` 分支。主仓库忽略 `Publish/`，因此只克隆主仓库不会自动下载此项目。本地预览步骤见下方[本地开发](#local-development--本地开发)。
 
-Cloning downloads the website files, release notes, and update metadata. To install Mozart IDE itself, download an installer from [GitHub Releases](https://github.com/hikariCodeAi/mozart-ide/releases).
+Cloning downloads the website files, release notes, and update metadata, not the Mozart IDE application. Installers have not yet been publicly released in this repository. Check [GitHub Releases](https://github.com/hikariCodeAi/mozart-ide/releases) for future release updates.
 
-克隆得到官网文件、版本说明和更新清单。若要安装 Mozart IDE 应用，请从 [GitHub Releases](https://github.com/hikariCodeAi/mozart-ide/releases) 下载安装包。
+克隆得到官网文件、版本说明和更新清单，而非 Mozart IDE 应用。本仓库尚未公开发布安装包；请前往 [GitHub Releases](https://github.com/hikariCodeAi/mozart-ide/releases) 查看后续发布动态。
 
 ## Architecture / 项目架构
 
