@@ -82,6 +82,12 @@ The homepage includes a canonical URL, a descriptive native C++ IDE title, and O
 
 首页初始 HTML 提供规范网址、明确产品类型的标题及社交分享摘要；切换中英文时同步更新相关元数据。分享预览使用已有产品图标，不新增下载状态、性能数字或官方背书声明。元数据优化不等于已向 Google 提交收录，也不代表已被收录。
 
+## Static fallback / 静态后备
+
+The initial HTML includes a concise bilingual product overview and public repository/release links outside the Vue app. It stays visible if JavaScript is disabled or Vue fails to load. Once Vue removes `v-cloak`, a CSS sibling selector hides the fallback, so the normal interactive page does not show duplicate content. The fallback makes no installer-availability or indexing claim and does not depend on CDN JavaScript.
+
+初始 HTML 包含简短的中英文产品简介与公开仓库、发布动态链接。禁用 JavaScript 或 Vue 加载失败时仍可阅读；Vue 完成渲染并移除 `v-cloak` 后，通过 CSS 隐藏后备内容，正常页面不重复展示。此后备不承诺已有安装包或已被搜索引擎收录。
+
 ## Release truth / 发布真实性
 
 Each platform can be published independently. A downloadable manifest uses a stable `X.Y.Z` version and at least one real GitHub Release asset, including platform, architecture, byte size, and SHA-256. Only set `published: true` after the public Release and its actual installer URL have been verified. Never publish placeholder links, fabricated checksums, signatures, or performance numbers.

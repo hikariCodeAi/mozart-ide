@@ -35,7 +35,7 @@
     <link rel="preload" as="image" href="assets/screenshots/performance-evidence-1710x1030.png">
     <title>Mozart IDE | 面向 AI 编程与代码审查的原生 C++ IDE</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="styles.css?v=20260927-desktop-rail">
+    <link rel="stylesheet" href="styles.css?v=20261113-static-fallback">
     <script defer src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.min.js"></script>
     <script defer src="app.js?v=20261113-search-metadata"></script>
   </head>
@@ -456,5 +456,23 @@
         </div>
       </dialog>
     </div>
+    <main class="static-fallback" aria-label="Mozart IDE product overview">
+      <img src="assets/brand/mozart-app-icon-256.png" width="72" height="72" alt="">
+      <h1>Mozart IDE</h1>
+      <section lang="zh-CN">
+        <h2>面向 AI 编程与代码审查的原生 C++ IDE</h2>
+        <p>Mozart IDE 是桌面开发工具，围绕 Agent 工作流、双栏 Diff、项目管理与 Git 操作构建。</p>
+        <p>交互式展示需要 JavaScript 及相关资源成功加载。你仍可通过下方链接了解公开发布状态；克隆官网仓库并不等于安装应用。</p>
+      </section>
+      <section lang="en">
+        <h2>A native C++ IDE for AI coding and code review</h2>
+        <p>Mozart IDE is a desktop development workspace for Agent workflows, side-by-side diffs, project management, and Git operations.</p>
+        <p>The interactive presentation requires JavaScript and its resources to load. Use the links below for public release information. Cloning the website repository does not install the application.</p>
+      </section>
+      <nav aria-label="Public product links">
+        <a href="https://github.com/hikariCodeAi/mozart-ide/releases">查看发布动态 / Release updates</a>
+        <a href="https://github.com/hikariCodeAi/mozart-ide">公开官网仓库 / Website repository</a>
+      </nav>
+    </main>
   </body>
 </html>

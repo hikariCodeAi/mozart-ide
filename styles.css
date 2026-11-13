@@ -79,6 +79,32 @@ a:focus-visible,
 
 [v-cloak] { display: none; }
 
+/* A readable HTML entry point until Vue has rendered the interactive page.
+   This also covers disabled JavaScript and a failed Vue CDN request. */
+#app:not([v-cloak]) ~ .static-fallback { display: none; }
+
+.static-fallback {
+  width: min(48rem, calc(100% - 2rem));
+  margin: clamp(1rem, 5vh, 3rem) auto;
+  padding: var(--panel-padding);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-panel);
+  background: var(--panel-bg);
+  color: var(--text);
+  font: 1rem/1.6 var(--font-body);
+  overflow-wrap: anywhere;
+}
+.static-fallback h1 {
+  margin: 0.5rem 0 1rem;
+  font: 2rem/1.2 var(--font-heading);
+}
+.static-fallback h2 { margin: 1.25rem 0 0.5rem; font-size: 1.125rem; }
+.static-fallback p { margin: 0.5rem 0; }
+.static-fallback nav { display: flex; flex-wrap: wrap; gap: var(--control-gap); margin-top: 1.5rem; }
+.static-fallback a { color: var(--brand); text-decoration: underline; text-underline-offset: 0.2em; }
+.static-fallback a:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+
+
 .sr-only {
   position: absolute !important;
   width: 1px !important;
