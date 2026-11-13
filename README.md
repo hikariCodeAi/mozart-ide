@@ -76,6 +76,12 @@ python3 -m json.tool update/latest.json >/dev/null
 git diff --check
 ```
 
+## Search and sharing metadata / 搜索与分享元数据
+
+The homepage includes a canonical URL, a descriptive native C++ IDE title, and Open Graph/Twitter summary metadata in the initial HTML. Language switching keeps the document title, description, and social metadata aligned. The preview uses the existing product icon; no download availability, performance results, endorsements, or search-indexing guarantees are added. These metadata changes do not submit the site to Google Search Console or establish its indexing status.
+
+首页初始 HTML 提供规范网址、明确产品类型的标题及社交分享摘要；切换中英文时同步更新相关元数据。分享预览使用已有产品图标，不新增下载状态、性能数字或官方背书声明。元数据优化不等于已向 Google 提交收录，也不代表已被收录。
+
 ## Release truth / 发布真实性
 
 Each platform can be published independently. A downloadable manifest uses a stable `X.Y.Z` version and at least one real GitHub Release asset, including platform, architecture, byte size, and SHA-256. Only set `published: true` after the public Release and its actual installer URL have been verified. Never publish placeholder links, fabricated checksums, signatures, or performance numbers.

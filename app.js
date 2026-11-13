@@ -41,8 +41,8 @@
   const TRANSLATIONS = {
     zh: {
       meta: {
-        title: "Mozart IDE — 代码由 Agent 批量生产，审查由特种兵一枪毙命",
-        description: "Mozart IDE：告别 4GB 内存巨婴。纯 C++ 底层锻造，专为现代代码审判而生的原生 IDE 与官方 Agent 宿主。",
+        title: "Mozart IDE | 面向 AI 编程与代码审查的原生 C++ IDE",
+        description: "Mozart IDE 是面向 AI 辅助编程与代码审查的原生 C++ 桌面 IDE，围绕 Agent 工作流、双栏 Diff、项目管理和 Git 操作构建。",
       },
       ui: {
         skip: "跳到主要内容",
@@ -160,8 +160,8 @@
     },
     en: {
       meta: {
-        title: "Mozart IDE — Built for the Agent era",
-        description: "Mozart IDE is a native C++ development and final-review workspace for the Agent era.",
+        title: "Mozart IDE | Native C++ IDE for AI Coding and Code Review",
+        description: "Mozart IDE is a native C++ desktop IDE for AI-assisted coding and code review, with Agent workflows, side-by-side diffs, project management, and Git operations.",
       },
       ui: {
         skip: "Skip to main content",
@@ -527,6 +527,18 @@
         document.title = this.dictionary.meta.title;
         const description = document.querySelector('meta[name="description"]');
         if (description) description.setAttribute("content", this.dictionary.meta.description);
+        const metadata = {
+          'meta[property="og:title"]': this.dictionary.meta.title,
+          'meta[property="og:description"]': this.dictionary.meta.description,
+          'meta[property="og:locale"]': this.locale === "zh" ? "zh_CN" : "en_US",
+          'meta[property="og:locale:alternate"]': this.locale === "zh" ? "en_US" : "zh_CN",
+          'meta[name="twitter:title"]': this.dictionary.meta.title,
+          'meta[name="twitter:description"]': this.dictionary.meta.description,
+        };
+        Object.entries(metadata).forEach(([selector, content]) => {
+          const element = document.querySelector(selector);
+          if (element) element.setAttribute("content", content);
+        });
       },
       handlePointerDown(event) {
         this.pauseBeforePointer = event.target.closest(".pause-button") ? this.autoplayPaused : null;
