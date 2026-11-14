@@ -4,7 +4,17 @@ This repository hosts the [Mozart IDE homepage](https://hikaricodeai.github.io/m
 
 本仓库用于维护 [Mozart IDE 官网](https://hikaricodeai.github.io/mozart-ide/)、公开版本说明和更新清单；IDE 产品源码仍保存在私有开发仓库中。
 
-## Repository and cloning / 仓库地址与下载
+## For visitors / 访客介绍
+
+Mozart IDE is a native C++ desktop IDE for AI-assisted coding and code review, with Agent workflows, side-by-side diffs, project management, and Git operations. Explore the [product website](https://hikaricodeai.github.io/mozart-ide/) for an overview and screenshots. This repository has not yet published public installers; check [GitHub Releases](https://github.com/hikariCodeAi/mozart-ide/releases) for future release updates.
+
+Mozart IDE 是面向 AI 辅助编程与代码审查的原生 C++ 桌面 IDE，围绕 Agent 工作流、双栏 Diff、项目管理与 Git 操作构建。可前往[产品官网](https://hikaricodeai.github.io/mozart-ide/)查看介绍与截图。本仓库尚未公开发布安装包；请通过 [GitHub Releases](https://github.com/hikariCodeAi/mozart-ide/releases) 查看后续发布动态。
+
+## For maintainers: repository and cloning / 维护者：仓库地址与克隆
+
+The instructions below are for maintaining the public website, not installing Mozart IDE.
+
+以下说明面向官网维护者，不是 Mozart IDE 应用的安装步骤。
 
 Public repository / 公开仓库：[hikariCodeAi/mozart-ide](https://github.com/hikariCodeAi/mozart-ide)
 
